@@ -27,13 +27,19 @@ end sub
 
 sub itemContentChanged()
 
-    ' Set Random background colors from pallet
-    posterBackgrounds = m.global.constants.poster_bg_pallet
-    m.backdrop.blendColor = posterBackgrounds[rnd(posterBackgrounds.count()) - 1]
-
     itemData = m.top.itemContent
 
     if itemData = invalid then return
+
+    if itemData.posterBlurhashUrl = ""
+        ' Set Random background colors from pallet
+        m.posterText.visible = true
+        posterBackgrounds = m.global.constants.poster_bg_pallet
+        m.backdrop.blendColor = posterBackgrounds[rnd(posterBackgrounds.count()) - 1]
+    else
+        m.backdrop.uri = itemData.posterBlurhashUrl
+        m.posterText.visible = false
+    end if
 
     if itemData.type = "Movie"
         m.itemPoster.uri = itemData.PosterUrl
@@ -103,7 +109,6 @@ sub itemContentChanged()
     'If Poster not loaded, ensure "blue box" is shown until loaded
     if m.itemPoster.loadStatus <> "ready"
         m.backdrop.visible = true
-        m.posterText.visible = true
     end if
 
     m.posterText.text = m.itemText.text

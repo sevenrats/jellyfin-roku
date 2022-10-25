@@ -41,7 +41,7 @@ sub setPoster()
             imgParams = { "maxHeight": 440, "maxWidth": 295 }
             m.top.posterURL = ImageURL(m.top.json.id, "Primary", imgParams)
             bh = m.top.json.ImageBlurHashes.Primary[m.top.json.ImageTags.Primary]
-            m.top.posterURL = fakeblurhash_renderBlurhash(bh, imgParams.maxWidth, imgParams.maxHeight)
+            m.top.posterBlurHashUrl = fakeblurhash_renderBlurhash(bh, imgParams.maxWidth, imgParams.maxHeight)
         else if m.top.json.BackdropImageTags[0] <> invalid
             imgParams = { "maxHeight": 440 }
             m.top.posterURL = ImageURL(m.top.json.id, "Backdrop", imgParams)
