@@ -963,5 +963,25 @@
             <source>Resumable</source>
             <translation>Resumable</translation>
         </message>
+        <message>
+            <source>Guide</source>
+            <translation>Guide</translation>
+            <extracomment>Trickplaybar button, Guide</extracomment>
+        </message>
+        <message>
+            <source>Info</source>
+            <translation>Info</translation>
+            <extracomment>Trickplaybar button, Info</extracomment>
+        </message>
+        <message>
+            <source>Cast</source>
+            <translation>Cast</translation>
+            <extracomment>Trickplaybar button, Cast</extracomment>
+        </message>
+        <message>
+            <source>Loop</source>
+            <translation>Loop</translation>
+            <extracomment>Trickplaybar button, Loop</extracomment>
+        </message>
     </context>
 </TS>
