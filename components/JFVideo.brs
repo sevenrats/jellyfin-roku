@@ -12,6 +12,15 @@ sub init()
         clockNode = findNodeBySubtype(m.top, "clock")
         if clockNode[0] <> invalid then clockNode[0].parent.removeChild(clockNode[0].node)
     end if
+    'm.trick = m.top.findNode("trickPlayBar")
+    m.top.playbackActionButtons = [
+        { "text": tr("Guide"), "icon": "pkg:/images/icons/guide.png" },
+        { "text": tr("Info"), "icon": "pkg:/images/icons/info.png" },
+        { "text": tr("Cast"), "icon": "pkg:/images/icons/cast.png" },
+        { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png" },
+        { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png" }
+    ]
+    print m.top.playbackActionButtons[0]
 end sub
 
 '
