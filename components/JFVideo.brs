@@ -96,6 +96,14 @@ sub onPositionChanged()
     if not isValid(m.dialog)
         checkTimeToDisplayNextEpisode()
     end if
+    'm.trick = m.top.findNode("trickPlayBar")
+    m.top.playbackActionButtons = [
+        { "text": tr("Guide"), "icon": "pkg:/images/icons/guide.png" },
+        { "text": tr("Info"), "icon": "pkg:/images/icons/info.png" },
+        { "text": tr("Cast"), "icon": "pkg:/images/icons/cast.png" },
+        { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png" },
+        { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png" }
+    ]
 end sub
 
 '
