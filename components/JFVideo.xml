@@ -29,5 +29,7 @@
   <children>
     <timer id="playbackTimer" repeat="true" duration="30" />
     <timer id="bufferCheckTimer" repeat="true" />
+        <!-- "Cast and Crew" row -->
+    <extrasSlider id="movieExtras" />
   </children>
 </component>
