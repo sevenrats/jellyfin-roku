@@ -41,5 +41,7 @@
     <Animation id="hideNextEpisodeButton" duration=".2" repeat="false" easeFunction="inQuad">
       <FloatFieldInterpolator key="[0.0, 1.0]" keyValue="[.9, 0]" fieldToInterp="nextEpisode.opacity" />
     </Animation>
+        <!-- "Cast and Crew" row -->
+    <extrasSlider id="movieExtras" />
   </children>
 </component>
