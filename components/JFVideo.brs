@@ -14,11 +14,11 @@ sub init()
     end if
     'm.trick = m.top.findNode("trickPlayBar")
     m.top.playbackActionButtons = [
-        { "text": tr("Guide"), "icon": "pkg:/images/icons/guide.png" },
-        { "text": tr("Info"), "icon": "pkg:/images/icons/info.png" },
-        { "text": tr("Cast"), "icon": "pkg:/images/icons/cast.png" },
-        { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png" },
-        { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png" }
+        { "text": tr("Guide"), "icon": "pkg:/images/icons/guide-default.png", "focusIcon": "pkg:/images/icons/guide-selected.png" },
+        { "text": tr("Info"), "icon": "pkg:/images/icons/info-default.png", "focusIcon": "pkg:/images/icons/info-selected.png" },
+        { "text": tr("Cast"), "icon": "pkg:/images/icons/cast-default.png", "focusIcon": "pkg:/images/icons/cast-selected.png" },
+        { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png", "focusIcon": "pkg:/images/icons/loop-selected.png" },
+        { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png", "focusIcon": "pkg:/images/icons/favorite_selected.png" }
     ]
     print m.top.playbackActionButtons[0]
 end sub
@@ -139,13 +139,17 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
+    'castGrp = m.top.findNode("extrasGrid")
 
-    if m.top.Subtitles.count() and key = "down"
-        m.top.selectSubtitlePressed = true
+    if key = "down"
+        'castGrp.setFocus(true)
+        'm.top.findNode("VertSlider").reverse = false
+        'm.top.findNode("extrasFader").reverse = false
+        'm.top.findNode("pplAnime").control = "start"
         return true
-    else if key = "up"
-        m.top.selectPlaybackInfoPressed = true
-        return true
+        'else if key = "up"
+        '   m.top.selectPlaybackInfoPressed = true
+        '  return true
     end if
 
     return false
