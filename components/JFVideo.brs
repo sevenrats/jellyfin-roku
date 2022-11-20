@@ -247,6 +247,11 @@ sub Subtitles()
     end if
 end sub
 
+sub PlaybackInfo()
+    m.top.selectPlaybackInfoPressed = true
+    m.buttonGrp.visible = false
+end sub
+
 sub onButtonGroupEscaped()
     key = m.buttonGrp.escape
     if key = "up"
@@ -317,6 +322,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 if selectedButton.id = "cc"
                     Subtitles()
                 end if
+                if selectedButton.id = "playbackInfo"
+                    PlaybackInfo()
+                end if
                 return true
             end if
         end if
@@ -330,7 +338,8 @@ function onKeyEvent(key as string, press as boolean) as boolean
             end if
 
             if press
-                selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+                'selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+                selectedButton = m.top.selectedButtonIndex + 1
                 selectedButton.focus = false
 
                 return true
