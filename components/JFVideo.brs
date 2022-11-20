@@ -24,6 +24,7 @@ sub init()
     m.buttonGrp = m.top.findNode("buttons")
     m.buttonGrp.observeField("escape", "onButtonGroupEscaped")
     setupButtons()
+    print m.top.content
 end sub
 
 '
@@ -138,16 +139,20 @@ sub dialogClosed(msg)
     sourceNode.close = true
 end sub
 
+sub Subtitles()
+    if m.top.Subtitles.count()
+        m.top.selectSubtitlePressed = true
+        m.buttonGrp.visible = false
+    end if
+end sub
+
 sub onButtonGroupEscaped()
     key = m.buttonGrp.escape
     if key = "up"
         m.buttonGrp.setFocus(false)
         m.buttonGrp.visible = false
         m.top.setFocus(true)
-        print "key up"
     end if
-
-
 end sub
 
 ' Setup playback buttons, default to Play button selected
@@ -193,7 +198,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if press
                 selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
                 selectedButton.selected = not selectedButton.selected
-                print "button Selected = " selectedButton.id
+                if selectedButton.id = "cc"
+                    Subtitles()
+                end if
                 return true
             end if
         end if
