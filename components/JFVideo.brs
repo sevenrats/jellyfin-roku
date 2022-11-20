@@ -104,6 +104,17 @@ sub onPositionChanged()
         { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png", "focusIcon": "pkg:/images/icons/loop-selected.png" },
         { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png", "focusIcon": "pkg:/images/icons/favorite_selected.png" }
     ]
+    'm.top.playbackActionButtons = [
+    '    { "text": tr("Guide"), "icon": "pkg:/images/icons/guide-default.png", "focusIcon": "pkg:/images/icons/guide-selected.png" },
+    '    { "text": tr("Info"), "icon": "pkg:/images/icons/info-default.png", "focusIcon": "pkg:/images/icons/info-selected.png" },
+    '   { "text": tr("Cast"), "icon": "pkg:/images/icons/cast-default.png", "focusIcon": "pkg:/images/icons/cast-selected.png" },
+    '  { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png", "focusIcon": "pkg:/images/icons/loop-selected.png" },
+    ' { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png", "focusIcon": "pkg:/images/icons/favorite_selected.png" }
+    ']
+
+    m.buttonGrp = m.top.findNode("buttons")
+    m.buttonGrp.observeField("escape", "onButtonGroupEscaped")
+    setupButtons()
 end sub
 
 '
@@ -228,6 +239,45 @@ sub dialogClosed(msg)
     sourceNode.close = true
 end sub
 
+sub onButtonGroupEscaped()
+    key = m.buttonGrp.escape
+    if key = "up"
+        m.buttonGrp.setFocus(false)
+        m.buttonGrp.visible = false
+        m.top.setFocus(true)
+        print "key up"
+    end if
+
+
+end sub
+
+' Setup playback buttons, default to Play button selected
+sub setupButtons()
+    m.buttonGrp.visible = false
+    m.buttonGrp = m.top.findNode("buttons")
+    m.buttonCount = m.buttonGrp.getChildCount()
+
+    m.previouslySelectedButtonIndex = -1
+
+    m.top.observeField("selectedButtonIndex", "onButtonSelectedChange")
+    m.top.selectedButtonIndex = 0
+end sub
+
+' Event handler when user selected a different playback button
+sub onButtonSelectedChange()
+    ' Change previously selected button back to default image
+    if m.previouslySelectedButtonIndex > -1
+        previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
+        previousSelectedButton.focus = false
+        print "previous button = "m.previouslySelectedButtonIndex
+    end if
+
+    ' Change selected button image to selected image
+    selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+    selectedButton.focus = true
+    print "Selected Button = " selectedButton
+end sub
+
 function onKeyEvent(key as string, press as boolean) as boolean
 
     if key = "OK" and m.nextEpisodeButton.hasfocus() and not m.top.trickPlayBar.visible
@@ -245,17 +295,56 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
     if not press then return false
     'castGrp = m.top.findNode("extrasGrid")
-
     if key = "down"
-        'castGrp.setFocus(true)
-        'm.top.findNode("VertSlider").reverse = false
-        'm.top.findNode("extrasFader").reverse = false
-        'm.top.findNode("pplAnime").control = "start"
+        print "button index = " m.top.selectedButtonIndex
+        m.buttonGrp.setFocus(true)
+        m.buttonGrp.visible = true
+
+        print "key down"
         return true
-        'else if key = "up"
-        '   m.top.selectPlaybackInfoPressed = true
-        '  return true
     end if
+
+    if m.buttonGrp.isInFocusChain()
+        if key = "OK"
+            if press
+                selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+                selectedButton.selected = not selectedButton.selected
+                print "button Selected = " selectedButton.id
+                return true
+            end if
+        end if
+
+        if key = "left"
+            if m.top.selectedButtonIndex > 0
+                m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
+                m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
+                print "m.top.selectedButtonIndex = " m.top.selectedButtonIndex
+                return true
+            end if
+
+            if press
+                selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+                selectedButton.focus = false
+
+                return true
+            end if
+
+            return false
+        end if
+
+        if key = "right"
+
+            m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
+            if m.top.selectedButtonIndex < m.buttonCount - 1
+                m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
+            end if
+            print "right m.top.selectedButtonIndex = " m.top.selectedButtonIndex
+            return true
+
+        end if
+    end if
+
+    if not press then return false
 
     return false
 end function

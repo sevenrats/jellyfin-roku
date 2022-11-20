@@ -262,6 +262,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if m.top.selectedButtonIndex > 0
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
                 m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
+                print "index= "m.top.selectedButtonIndex
                 return true
             end if
 
@@ -270,6 +271,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 selectedButton.focus = false
 
                 m.sectionNavigation.setFocus(true)
+                print "if press"
                 return true
             end if
 
@@ -282,11 +284,12 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if m.buttonGrp.getChild(m.top.selectedButtonIndex).escape = "right"
                 m.buttonGrp.getChild(m.top.selectedButtonIndex).escape = ""
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
-
+                print "first if"
                 if m.top.selectedButtonIndex < m.buttonCount - 1
                     m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
+                    print "second if"
                 end if
-
+                print "index= "m.top.selectedButtonIndex
                 return true
             end if
         end if

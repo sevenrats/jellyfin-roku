@@ -22,6 +22,8 @@
     <field id="videoId" type="string" />
     <field id="mediaSourceId" type="string" />
     <field id="audioIndex" type="integer" />
+    <field id="selectedButtonIndex" type="integer" value="-1" />
+
     <field id="runTime" type="integer" />
   </interface>
   <script type="text/brightscript" uri="JFVideo.brs" />
@@ -42,6 +44,11 @@
       <FloatFieldInterpolator key="[0.0, 1.0]" keyValue="[.9, 0]" fieldToInterp="nextEpisode.opacity" />
     </Animation>
         <!-- "Cast and Crew" row -->
-    <extrasSlider id="movieExtras" />
+    <ButtonGroupHoriz id="buttons" itemSpacings="[20]" translation = "[95,950]">
+      <IconButton id="guide" background="#070707" focusBackground="#00a4dc" padding="35" icon="pkg:/images/icons/guide-default.png" text="Guide" height="85" width="150" />
+      <IconButton id="info" background="#070707" focusBackground="#00a4dc" padding="35" icon="pkg:/images/icons/info-default.png" text="Info" height="85" width="150" />
+      <IconButton id="cc" background="#070707" focusBackground="#00a4dc" padding="35" icon="pkg:/images/icons/cc-default.png" text="CC" height="85" width="150" />
+    </ButtonGroupHoriz>
+    <!--<extrasSlider id="movieExtras" />-->
   </children>
 </component>
