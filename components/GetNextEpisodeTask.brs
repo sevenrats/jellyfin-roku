@@ -11,5 +11,4 @@ sub getNextEpisodeTask()
     })
 
     m.top.nextEpisodeData = m.nextEpisodeData
-    print "m.top.nextEpisodeData = " m.top.nextEpisodeData
 end sub
