@@ -16,10 +16,6 @@ function VideoPlayer(id, mediaSourceId = invalid, audio_stream_idx = 1, subtitle
     video.retrievingBar.filledBarBlendColor = jellyfin_blue
     video.bufferingBar.filledBarBlendColor = jellyfin_blue
     video.trickPlayBar.filledBarBlendColor = jellyfin_blue
-    'video.trickPlayBar.playbackActionButtons = ["Info", "CC", "Loop"]
-    'video.trickPlayBar.playbackActionButtons[0].text = "Info"
-    'video.trickPlayBar.playbackActionButtons[1].text = "CC"
-    'video.trickPlayBar.playbackActionButtons[2].text = "Loop"
     return video
 end function
 

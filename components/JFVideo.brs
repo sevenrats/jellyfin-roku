@@ -115,15 +115,18 @@ sub onPositionChanged()
     m.buttonGrp = m.top.findNode("buttons")
     m.buttonGrp.observeField("escape", "onButtonGroupEscaped")
     setupButtons()
-    print m.top.content
+
+    m.checkedForNextEpisode = false
+    m.getNextEpisodeTask = createObject("roSGNode", "GetNextEpisodeTask")
+    m.getNextEpisodeTask.observeField("nextEpisodeData", "onNextEpisodeDataLoaded")
 end sub
 
 '
 ' When Video Player state changes
+' When Video Player state changes
 sub onState(msg)
     ' When buffering, start timer to monitor buffering process
     if m.top.state = "buffering" and m.bufferCheckTimer <> invalid
-
         ' start timer
         m.bufferCheckTimer.control = "start"
         m.bufferCheckTimer.ObserveField("fire", "bufferCheck")
@@ -139,7 +142,6 @@ sub onState(msg)
             dialog.observeField("buttonSelected", "dialogClosed")
             m.top.getScene().dialog = dialog
         end if
-
         ' Stop playback and exit player
         m.top.control = "stop"
         m.top.backPressed = true
@@ -147,10 +149,13 @@ sub onState(msg)
 
         ' Check if next episde is available
         if isValid(m.top.showID)
+            print m.top.content.contenttype
             if m.top.showID <> "" and not m.checkedForNextEpisode and m.top.content.contenttype = 4
                 m.getNextEpisodeTask.showID = m.top.showID
                 m.getNextEpisodeTask.videoID = m.top.id
                 m.getNextEpisodeTask.control = "RUN"
+                'remove Guide option
+                m.buttonGrp.removeChild(m.top.findNode("guide"))
             end if
         end if
 
@@ -169,7 +174,6 @@ sub onState(msg)
         ReportPlayback("stop")
         m.playReported = false
     end if
-
 end sub
 
 '
@@ -232,12 +236,28 @@ sub bufferCheck(msg)
 
 end sub
 
+sub info()
+    ' If buffering has stopped Display dialog
+    dialog = createObject("roSGNode", "Dialog")
+    dialog.buttons = [tr("OK")]
+    dialog.message = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
+    dialog.observeField("buttonSelected", "dialogClosed")
+    m.top.getScene().dialog = dialog
+    m.top.control = "pause"
+end sub
+
 '
 ' Clean up on Dialog Closed
 sub dialogClosed(msg)
     sourceNode = msg.getRoSGNode()
     sourceNode.unobserveField("buttonSelected")
     sourceNode.close = true
+
+    '
+    ' if paused and diloge closed then play video
+    if m.top.control = "pause"
+        m.top.control = "resume"
+    end if
 end sub
 
 sub Subtitles()
@@ -285,7 +305,6 @@ sub onButtonSelectedChange()
     ' Change selected button image to selected image
     selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
     selectedButton.focus = true
-    print "Selected Button = " selectedButton
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
@@ -325,7 +344,10 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 if selectedButton.id = "playbackInfo"
                     PlaybackInfo()
                 end if
-                return true
+                if selectedButton.id = "info"
+                    info()
+                    return true
+                end if
             end if
         end if
 
@@ -338,7 +360,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
             end if
 
             if press
-                'selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+                selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
                 selectedButton = m.top.selectedButtonIndex + 1
                 selectedButton.focus = false
 
