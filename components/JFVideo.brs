@@ -117,8 +117,11 @@ sub onPositionChanged()
     setupButtons()
 
     m.checkedForNextEpisode = false
+    m.movieInfo = false
     m.getNextEpisodeTask = createObject("roSGNode", "GetNextEpisodeTask")
     m.getNextEpisodeTask.observeField("nextEpisodeData", "onNextEpisodeDataLoaded")
+
+    m.getItemQueryTask = createObject("roSGNode", "GetItemQueryTask")
 end sub
 
 '
@@ -149,11 +152,20 @@ sub onState(msg)
 
         ' Check if next episde is available
         if isValid(m.top.showID)
-            print m.top.content.contenttype
             if m.top.showID <> "" and not m.checkedForNextEpisode and m.top.content.contenttype = 4
                 m.getNextEpisodeTask.showID = m.top.showID
                 m.getNextEpisodeTask.videoID = m.top.id
                 m.getNextEpisodeTask.control = "RUN"
+                'remove Guide option
+                m.buttonGrp.removeChild(m.top.findNode("guide"))
+            end if
+        end if
+
+        ' Check if video is movie
+        if m.top.content.contenttype = 1
+            if m.top.videoID <> "" and not m.movieInfo and m.top.content.contenttype = 1
+                m.getItemQueryTask.videoID = m.top.id
+                m.getItemQueryTask.control = "RUN"
                 'remove Guide option
                 m.buttonGrp.removeChild(m.top.findNode("guide"))
             end if
@@ -237,10 +249,21 @@ sub bufferCheck(msg)
 end sub
 
 sub info()
+    'episode info
+    if m.getNextEpisodeTask.nextEpisodeData <> invalid
+        m.info = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
+    else if m.getItemQueryTask.getItemQueryData <> invalid 'movie info
+        m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
+    else
+        m.info = "No Data"
+    end if
+
+    'movie info
+
     ' If buffering has stopped Display dialog
     dialog = createObject("roSGNode", "Dialog")
     dialog.buttons = [tr("OK")]
-    dialog.message = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
+    dialog.message = m.info
     dialog.observeField("buttonSelected", "dialogClosed")
     m.top.getScene().dialog = dialog
     m.top.control = "pause"
@@ -299,7 +322,6 @@ sub onButtonSelectedChange()
     if m.previouslySelectedButtonIndex > -1
         previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
         previousSelectedButton.focus = false
-        print "previous button = "m.previouslySelectedButtonIndex
     end if
 
     ' Change selected button image to selected image
@@ -325,11 +347,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     'castGrp = m.top.findNode("extrasGrid")
     if key = "down"
-        print "button index = " m.top.selectedButtonIndex
         m.buttonGrp.setFocus(true)
         m.buttonGrp.visible = true
 
-        print "key down"
         return true
     end if
 
@@ -355,7 +375,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if m.top.selectedButtonIndex > 0
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
                 m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
-                print "m.top.selectedButtonIndex = " m.top.selectedButtonIndex
                 return true
             end if
 
@@ -376,7 +395,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if m.top.selectedButtonIndex < m.buttonCount - 1
                 m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
             end if
-            print "right m.top.selectedButtonIndex = " m.top.selectedButtonIndex
             return true
 
         end if
