@@ -114,7 +114,7 @@ sub onPositionChanged()
 
     m.buttonGrp = m.top.findNode("buttons")
     m.buttonGrp.observeField("escape", "onButtonGroupEscaped")
-    setupButtons()
+    m.buttonGrp.visible = false
 
     m.checkedForNextEpisode = false
     m.movieInfo = false
@@ -158,6 +158,7 @@ sub onState(msg)
                 m.getNextEpisodeTask.control = "RUN"
                 'remove Guide option
                 m.buttonGrp.removeChild(m.top.findNode("guide"))
+                setupButtons()
             end if
         end if
 
@@ -168,6 +169,7 @@ sub onState(msg)
                 m.getItemQueryTask.control = "RUN"
                 'remove Guide option
                 m.buttonGrp.removeChild(m.top.findNode("guide"))
+                setupButtons()
             end if
         end if
 
@@ -375,28 +377,13 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if m.top.selectedButtonIndex > 0
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
                 m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
-                return true
-            end if
-
-            if press
-                selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
-                selectedButton = m.top.selectedButtonIndex + 1
-                selectedButton.focus = false
-
-                return true
-            end if
-
-            return false
-        end if
-
-        if key = "right"
-
-            m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
-            if m.top.selectedButtonIndex < m.buttonCount - 1
-                m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
             end if
             return true
-
+        end if
+        if key = "right"
+            m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
+            if m.top.selectedButtonIndex < m.buttonCount - 1 then m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
+            return true
         end if
     end if
 
