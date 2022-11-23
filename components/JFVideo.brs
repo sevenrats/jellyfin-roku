@@ -2,6 +2,8 @@ sub init()
     m.playbackTimer = m.top.findNode("playbackTimer")
     m.bufferCheckTimer = m.top.findNode("bufferCheckTimer")
     m.top.observeField("state", "onState")
+    m.top.observeField("content", "onContentChange")
+
     m.playbackTimer.observeField("fire", "ReportPlayback")
     m.bufferPercentage = 0 ' Track whether content is being loaded
     m.playReported = false
@@ -11,6 +13,88 @@ sub init()
     if get_user_setting("ui.design.hideclock") = "true"
         clockNode = findNodeBySubtype(m.top, "clock")
         if clockNode[0] <> invalid then clockNode[0].parent.removeChild(clockNode[0].node)
+    end if
+
+    'Play Next Episode button
+    m.nextEpisodeButton = m.top.findNode("nextEpisode")
+    m.nextEpisodeButton.text = tr("Next Episode")
+    m.nextEpisodeButton.setFocus(false)
+
+    m.showNextEpisodeButtonAnimation = m.top.findNode("showNextEpisodeButton")
+    m.hideNextEpisodeButtonAnimation = m.top.findNode("hideNextEpisodeButton")
+
+    m.checkedForNextEpisode = false
+    m.getNextEpisodeTask = createObject("roSGNode", "GetNextEpisodeTask")
+    m.getNextEpisodeTask.observeField("nextEpisodeData", "onNextEpisodeDataLoaded")
+
+end sub
+
+' Event handler for when video content field changes
+sub onContentChange()
+    if not isValid(m.top.content) then return
+
+    m.top.observeField("position", "onPositionChanged")
+
+    ' If video content type is not episode, remove position observer
+    if m.top.content.contenttype <> 4
+        m.top.unobserveField("position")
+    end if
+end sub
+
+sub onNextEpisodeDataLoaded()
+    m.checkedForNextEpisode = true
+
+    m.top.observeField("position", "onPositionChanged")
+
+    if m.getNextEpisodeTask.nextEpisodeData.Items.count() <> 2
+        m.top.unobserveField("position")
+    end if
+end sub
+
+'
+' Runs Next Episode button animation and sets focus to button
+sub showNextEpisodeButton()
+    if not m.nextEpisodeButton.visible
+        m.showNextEpisodeButtonAnimation.control = "start"
+        m.nextEpisodeButton.setFocus(true)
+        m.nextEpisodeButton.visible = true
+    end if
+end sub
+
+'
+'Update count down text
+sub updateCount()
+    m.nextEpisodeButton.text = tr("Next Episode") + " " + Int(m.top.runTime - m.top.position).toStr()
+end sub
+
+'
+' Runs hide Next Episode button animation and sets focus back to video
+sub hideNextEpisodeButton()
+    m.hideNextEpisodeButtonAnimation.control = "start"
+    m.nextEpisodeButton.setFocus(false)
+    m.top.setFocus(true)
+end sub
+
+' Checks if we need to display the Next Episode button
+sub checkTimeToDisplayNextEpisode()
+    if int(m.top.position) >= (m.top.runTime - 30)
+        showNextEpisodeButton()
+        updateCount()
+        return
+    end if
+
+    if m.nextEpisodeButton.visible or m.nextEpisodeButton.hasFocus()
+        m.nextEpisodeButton.visible = false
+        m.nextEpisodeButton.setFocus(false)
+    end if
+end sub
+
+' When Video Player state changes
+sub onPositionChanged()
+    ' Check if dialog is open
+    m.dialog = m.top.getScene().findNode("dialogBackground")
+    if not isValid(m.dialog)
+        checkTimeToDisplayNextEpisode()
     end if
 
     m.buttonGrp = m.top.findNode("buttons")
@@ -50,30 +134,6 @@ sub onState(msg)
         m.top.control = "stop"
         m.top.backPressed = true
     else if m.top.state = "playing"
-
-        ' Check if next episde is available
-        if isValid(m.top.showID)
-            if m.top.showID <> "" and not m.checkedForNextEpisode and m.top.content.contenttype = 4
-                m.getNextEpisodeTask.showID = m.top.showID
-                m.getNextEpisodeTask.videoID = m.top.id
-                m.getNextEpisodeTask.control = "RUN"
-                'remove Guide option
-                m.buttonGrp.removeChild(m.top.findNode("guide"))
-                setupButtons()
-            end if
-        end if
-
-        ' Check if video is movie
-        if m.top.content.contenttype = 1
-            if m.top.videoID <> "" and not m.movieInfo and m.top.content.contenttype = 1
-                m.getItemQueryTask.videoID = m.top.id
-                m.getItemQueryTask.control = "RUN"
-                'remove Guide option
-                m.buttonGrp.removeChild(m.top.findNode("guide"))
-                setupButtons()
-            end if
-        end if
-
         if m.playReported = false
             ReportPlayback("start")
             m.playReported = true
@@ -219,25 +279,13 @@ sub setupButtons()
     m.top.selectedButtonIndex = 0
 end sub
 
-' Event handler when user selected a different playback button
-sub onButtonSelectedChange()
-    ' Change previously selected button back to default image
-    if m.previouslySelectedButtonIndex > -1
-        previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
-        previousSelectedButton.focus = false
-    end if
 
-    ' Change selected button image to selected image
-    selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
-    selectedButton.focus = true
-end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    'castGrp = m.top.findNode("extrasGrid")
-    if key = "down"
-        m.buttonGrp.setFocus(true)
-        m.buttonGrp.visible = true
+    if not press then return false
 
+    if m.top.Subtitles.count() and key = "down"
+        m.top.selectSubtitlePressed = true
         return true
     end if
 

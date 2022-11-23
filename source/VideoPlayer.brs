@@ -428,7 +428,7 @@ sub autoPlayNextEpisode(videoID as string, showID as string)
         if data <> invalid and data.Items.Count() = 2
             ' setup new video node
             nextVideo = CreateVideoPlayerGroup(data.Items[1].Id, invalid, 1, false, false)
-            ' remove last video scene
+            ' remove last videoplayer scene
             m.global.sceneManager.callFunc("clearPreviousScene")
             if nextVideo <> invalid
                 m.global.sceneManager.callFunc("pushScene", nextVideo)
