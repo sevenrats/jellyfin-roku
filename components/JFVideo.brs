@@ -15,6 +15,10 @@ sub init()
         if clockNode[0] <> invalid then clockNode[0].parent.removeChild(clockNode[0].node)
     end if
 
+    m.buttonGrp = m.top.findNode("buttons")
+    m.buttonGrp.observeField("escape", "onButtonGroupEscaped")
+    m.buttonGrp.visible = false
+
     'Play Next Episode button
     m.nextEpisodeButton = m.top.findNode("nextEpisode")
     m.nextEpisodeButton.text = tr("Next Episode")
@@ -24,9 +28,24 @@ sub init()
     m.hideNextEpisodeButtonAnimation = m.top.findNode("hideNextEpisodeButton")
 
     m.checkedForNextEpisode = false
+    m.movieInfo = false
+
     m.getNextEpisodeTask = createObject("roSGNode", "GetNextEpisodeTask")
     m.getNextEpisodeTask.observeField("nextEpisodeData", "onNextEpisodeDataLoaded")
 
+    m.getItemQueryTask = createObject("roSGNode", "GetItemQueryTask")
+
+
+end sub
+
+'
+' Runs Next Episode button animation and sets focus to button
+sub shownextEpisode()
+    if m.nextEpisodeButton.hasFocus() = false
+        m.shownextEpisodeButtonAnimation.control = "start"
+        m.nextEpisodeButton.setFocus(true)
+        m.nextEpisodeButton.visible = true
+    end if
 end sub
 
 ' Event handler for when video content field changes
@@ -42,14 +61,15 @@ sub onContentChange()
 end sub
 
 sub onNextEpisodeDataLoaded()
-    m.checkedForNextEpisode = true
-
-    m.top.observeField("position", "onPositionChanged")
-
-    if m.getNextEpisodeTask.nextEpisodeData.Items.count() <> 2
+    if m.getNextEpisodeTask.nextEpisodeData.Items.count() = 2
+        m.top.observeField("position", "onPositionChanged")
+        m.checkedForNextEpisode = true
+    else ' No Next episode found, remove position observer
         m.top.unobserveField("position")
+        m.checkedForNextEpisode = true
     end if
 end sub
+
 
 '
 ' Runs Next Episode button animation and sets focus to button
@@ -58,6 +78,28 @@ sub showNextEpisodeButton()
         m.showNextEpisodeButtonAnimation.control = "start"
         m.nextEpisodeButton.setFocus(true)
         m.nextEpisodeButton.visible = true
+    end if
+end sub
+
+'
+' Runs hide Next Episode button animation and sets focus back to video
+sub hidenextEpisode()
+    'm.top.trickPlayBar.unobserveField("visible")
+    m.hidenextEpisodeButtonAnimation.control = "start"
+    m.nextEpisodeButton.setFocus(false)
+    m.top.setFocus(true)
+end sub
+
+
+sub handleNextEpisode()
+    ' Dialog box is open
+    if int(m.top.position) >= (m.top.runTime - 30)
+        shownextEpisode()
+        updateCount()
+    else
+        m.nextEpisodeButton.visible = false
+        m.nextEpisodeButton.setFocus(false)
+        m.top.setFocus(true)
     end if
 end sub
 
@@ -118,10 +160,6 @@ sub onPositionChanged()
 
     m.checkedForNextEpisode = false
     m.movieInfo = false
-    m.getNextEpisodeTask = createObject("roSGNode", "GetNextEpisodeTask")
-    m.getNextEpisodeTask.observeField("nextEpisodeData", "onNextEpisodeDataLoaded")
-
-    m.getItemQueryTask = createObject("roSGNode", "GetItemQueryTask")
 end sub
 
 '
@@ -152,6 +190,7 @@ sub onState(msg)
 
         ' Check if next episde is available
         if isValid(m.top.showID)
+            print m.top.content.contenttype
             if m.top.showID <> "" and not m.checkedForNextEpisode and m.top.content.contenttype = 4
                 m.getNextEpisodeTask.showID = m.top.showID
                 m.getNextEpisodeTask.videoID = m.top.id
@@ -277,6 +316,7 @@ sub dialogClosed(msg)
     sourceNode = msg.getRoSGNode()
     sourceNode.unobserveField("buttonSelected")
     sourceNode.close = true
+    m.top.setfocus(true)
 
     '
     ' if paused and diloge closed then play video
@@ -289,12 +329,14 @@ sub Subtitles()
     if m.top.Subtitles.count()
         m.top.selectSubtitlePressed = true
         m.buttonGrp.visible = false
+        m.top.setFocus(true)
     end if
 end sub
 
 sub PlaybackInfo()
     m.top.selectPlaybackInfoPressed = true
     m.buttonGrp.visible = false
+    m.top.setFocus(true)
 end sub
 
 sub onButtonGroupEscaped()
@@ -324,6 +366,21 @@ sub onButtonSelectedChange()
     if m.previouslySelectedButtonIndex > -1
         previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
         previousSelectedButton.focus = false
+
+    end if
+
+    ' Change selected button image to selected image
+    selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+    selectedButton.focus = true
+
+end sub
+
+' Event handler when user selected a different playback button
+sub onButtonSelectedChange()
+    ' Change previously selected button back to default image
+    if m.previouslySelectedButtonIndex > -1
+        previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
+        previousSelectedButton.focus = false
     end if
 
     ' Change selected button image to selected image
@@ -332,6 +389,7 @@ sub onButtonSelectedChange()
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
+    'castGrp = m.top.findNode("extrasGrid")
 
     if key = "OK" and m.nextEpisodeButton.hasfocus() and not m.top.trickPlayBar.visible
         m.top.state = "finished"
@@ -346,8 +404,16 @@ function onKeyEvent(key as string, press as boolean) as boolean
         end if
     end if
 
-    if not press then return false
-    'castGrp = m.top.findNode("extrasGrid")
+    if key = "OK" and m.nextEpisodeButton.isinfocuschain() and m.top.trickPlayMode = "play"
+        m.top.state = "finished"
+        return true
+    else
+        'Hide Next Episode Button
+        m.nextEpisodeButton.visible = false
+        m.nextEpisodeButton.setFocus(false)
+        m.top.setFocus(true)
+    end if
+
     if key = "down"
         m.buttonGrp.setFocus(true)
         m.buttonGrp.visible = true
@@ -355,7 +421,8 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
 
-    if m.buttonGrp.isInFocusChain()
+    if m.buttonGrp.visible = true
+        print "button group visible"
         if key = "OK"
             if press
                 selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
@@ -374,17 +441,24 @@ function onKeyEvent(key as string, press as boolean) as boolean
         end if
 
         if key = "left"
+            print "left"
             if m.top.selectedButtonIndex > 0
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
                 m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
+                return true
+            end if
+            return false
+        end if
+
+        if key = "right"
+            print "right"
+            m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
+            if m.top.selectedButtonIndex < m.buttonCount - 1
+                m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
             end if
             return true
         end if
-        if key = "right"
-            m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
-            if m.top.selectedButtonIndex < m.buttonCount - 1 then m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
-            return true
-        end if
+        return false
     end if
 
     if not press then return false
