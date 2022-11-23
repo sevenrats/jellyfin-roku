@@ -5,7 +5,7 @@ end sub
 sub getItemQueryTask()
     m.getItemQueryTask = api_API().users.getitemsbyquery(get_setting("active_user"), {
         ids: m.top.videoID,
-        fields: "Overview"
+        fields: "Overview,People"
     })
 
     m.top.getItemQueryData = m.getItemQueryTask
