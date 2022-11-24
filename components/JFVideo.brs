@@ -35,7 +35,7 @@ sub init()
 
     m.getItemQueryTask = createObject("roSGNode", "GetItemQueryTask")
 
-
+    m.extras = m.top.findNode("extrasGrid")
 end sub
 
 '
@@ -289,17 +289,22 @@ sub bufferCheck(msg)
 
 end sub
 
-sub info()
+sub setinfo()
     'episode info
     if m.getNextEpisodeTask.nextEpisodeData <> invalid
         m.info = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
+        m.content = m.getNextEpisodeTask.nextEpisodeData.Items[0]
+        m.extras.callFunc("loadPeople", m.content)
     else if m.getItemQueryTask.getItemQueryData <> invalid 'movie info
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
+        m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
+        m.extras.callFunc("loadPeople", m.content)
     else
         m.info = "No Data"
     end if
+end sub
 
-    'movie info
+sub info()
 
     ' If buffering has stopped Display dialog
     dialog = createObject("roSGNode", "Dialog")
@@ -316,8 +321,7 @@ sub dialogClosed(msg)
     sourceNode = msg.getRoSGNode()
     sourceNode.unobserveField("buttonSelected")
     sourceNode.close = true
-    m.top.setfocus(true)
-
+    m.buttonGrp.visible = true
     '
     ' if paused and diloge closed then play video
     if m.top.control = "pause"
@@ -366,21 +370,6 @@ sub onButtonSelectedChange()
     if m.previouslySelectedButtonIndex > -1
         previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
         previousSelectedButton.focus = false
-
-    end if
-
-    ' Change selected button image to selected image
-    selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
-    selectedButton.focus = true
-
-end sub
-
-' Event handler when user selected a different playback button
-sub onButtonSelectedChange()
-    ' Change previously selected button back to default image
-    if m.previouslySelectedButtonIndex > -1
-        previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
-        previousSelectedButton.focus = false
     end if
 
     ' Change selected button image to selected image
@@ -413,16 +402,24 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m.nextEpisodeButton.setFocus(false)
         m.top.setFocus(true)
     end if
-
-    if key = "down"
+    if key = "down" and m.top.hasFocus()
+        setinfo()
+        print "button index = " m.top.selectedButtonIndex
         m.buttonGrp.setFocus(true)
         m.buttonGrp.visible = true
-
         return true
     end if
 
+    if key = "down" and m.extras.hasFocus()
+        m.extras.setFocus(false)
+        m.top.findNode("VertSlider").reverse = true
+        m.top.findNode("extrasFader").reverse = true
+        m.top.findNode("pplAnime").control = "start"
+        m.buttonGrp.setFocus(true)
+
+    end if
+
     if m.buttonGrp.visible = true
-        print "button group visible"
         if key = "OK"
             if press
                 selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
@@ -435,6 +432,14 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 end if
                 if selectedButton.id = "info"
                     info()
+                    return true
+                end if
+                if selectedButton.id = "cast"
+                    print "doing cast info"
+                    m.extras.setFocus(true)
+                    m.top.findNode("VertSlider").reverse = false
+                    m.top.findNode("extrasFader").reverse = false
+                    m.top.findNode("pplAnime").control = "start"
                     return true
                 end if
             end if

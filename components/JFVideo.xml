@@ -43,6 +43,8 @@
       <IconButton id="playbackInfo" background="#070707" focusBackground="#00a4dc" padding="35" icon="pkg:/images/icons/playbackInfo-default.png" text="Stream Info" height="85" width="150" />
 
     </ButtonGroupHoriz>
+    <!-- "Cast and Crew" row -->
+    <extrasSlider id="extrasGrid" />
     <!--animation for the play next episode button-->
     <Animation id="showNextEpisodeButton" duration="1.0" repeat="false" easeFunction="inQuad">
       <FloatFieldInterpolator key="[0.0, 1.0]" keyValue="[0.0, .9]" fieldToInterp="nextEpisode.opacity" />
