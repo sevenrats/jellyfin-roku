@@ -36,6 +36,7 @@ sub init()
     m.getItemQueryTask = createObject("roSGNode", "GetItemQueryTask")
 
     m.extras = m.top.findNode("extrasGrid")
+    m.extrasGrp = m.top.findnode("extrasGrp")
 end sub
 
 '
@@ -193,6 +194,14 @@ sub onState(msg)
             end if
         end if
 
+        if m.top.content.live = true
+            m.buttonGrp.removeChild(m.top.findNode("cast"))
+            m.buttonGrp.removeChild(m.top.findNode("cc"))
+
+            setupButtons()
+        end if
+        print m.top.content
+
         if m.playReported = false
             ReportPlayback("start")
             m.playReported = true
@@ -275,11 +284,9 @@ sub setinfo()
     if m.getNextEpisodeTask.nextEpisodeData <> invalid
         m.info = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
         m.content = m.getNextEpisodeTask.nextEpisodeData.Items[0]
-        m.extras.callFunc("loadPeople", m.content)
     else if m.getItemQueryTask.getItemQueryData <> invalid 'movie info
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
-        m.extras.callFunc("loadPeople", m.content)
     else
         m.info = "No Data"
     end if
