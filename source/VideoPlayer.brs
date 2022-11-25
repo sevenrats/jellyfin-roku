@@ -196,6 +196,9 @@ sub AddVideoContent(video, mediaSourceId, audio_stream_idx = 1, subtitle_idx = -
     if meta.live
         video.content.live = true
         video.content.StreamFormat = "hls"
+        video.content.IgnoreStreamErrors = true
+        video.content.SwitchingStrategy = "full-adaptation"
+
     end if
 
     video.container = getContainerType(meta)
