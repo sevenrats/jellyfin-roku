@@ -509,12 +509,10 @@ function CreateVideoPlayerGroup(video_id, mediaSourceId = invalid, audio_stream_
     video.observeField("selectPlaybackInfoPressed", m.port)
     video.observeField("state", m.port)
 
-    group = CreateObject("roSGNode", "JFVideo")
-    group.videoContent = ItemMetaData(video_id)
-
-    extras = group.findNode("extrasGrid")
+    extras = video.findNode("extrasGrid")
     extras.observeField("selectedItem", m.port)
-    extras.callFunc("loadPeople", group.videoContent)
+    extras.callFunc("loadPeople", ItemMetaData(video_id).json)
+
     return video
 end function
 
