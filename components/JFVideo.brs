@@ -36,7 +36,8 @@ sub init()
     m.getItemQueryTask = createObject("roSGNode", "GetItemQueryTask")
 
     m.extras = m.top.findNode("extrasGrid")
-    m.extrasGrp = m.top.findnode("extrasGrp")
+    m.extrasGrp = m.top.findnode("extrasContainer")
+    m.extrasGrp.opacity = 0
 end sub
 
 '
@@ -191,7 +192,6 @@ sub onState(msg)
 
         ' Check if next episde is available
         if isValid(m.top.showID)
-            print m.top.content.contenttype
             if m.top.showID <> "" and not m.checkedForNextEpisode and m.top.content.contenttype = 4
                 m.getNextEpisodeTask.showID = m.top.showID
                 m.getNextEpisodeTask.videoID = m.top.id
@@ -219,7 +219,6 @@ sub onState(msg)
 
             setupButtons()
         end if
-        print m.top.content
 
         if m.playReported = false
             ReportPlayback("start")
@@ -386,18 +385,9 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     'castGrp = m.top.findNode("extrasGrid")
-
-    if key = "OK" and m.nextEpisodeButton.hasfocus() and not m.top.trickPlayBar.visible
-        m.top.state = "finished"
-        hideNextEpisodeButton()
+    if key = "back" and m.top.control = "pause"
+        m.top.control = "resume"
         return true
-    else
-        'Hide Next Episode Button
-        if m.nextEpisodeButton.visible or m.nextEpisodeButton.hasFocus()
-            m.nextEpisodeButton.visible = false
-            m.nextEpisodeButton.setFocus(false)
-            m.top.setFocus(true)
-        end if
     end if
 
     if key = "OK" and m.nextEpisodeButton.isinfocuschain() and m.top.trickPlayMode = "play"
@@ -411,18 +401,19 @@ function onKeyEvent(key as string, press as boolean) as boolean
     end if
     if key = "down" and m.top.hasFocus()
         setinfo()
-        print "button index = " m.top.selectedButtonIndex
         m.buttonGrp.setFocus(true)
         m.buttonGrp.visible = true
         return true
     end if
 
-    if key = "down" and m.extras.hasFocus()
+    if (key = "down" or key = "back") and m.extras.hasFocus()
         m.extras.setFocus(false)
         m.top.findNode("VertSlider").reverse = true
         m.top.findNode("extrasFader").reverse = true
         m.top.findNode("pplAnime").control = "start"
         m.buttonGrp.setFocus(true)
+        m.top.control = "resume"
+        m.extrasGrp.opacity = 0
 
     end if
 
@@ -436,13 +427,16 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 end if
                 if selectedButton.id = "playbackInfo"
                     PlaybackInfo()
+                    m.top.control = "pause"
                 end if
                 if selectedButton.id = "info"
                     info()
+                    m.top.control = "pause"
                     return true
                 end if
                 if selectedButton.id = "cast"
-                    print "doing cast info"
+                    m.top.control = "pause"
+                    m.extrasGrp.opacity = 1
                     m.extras.setFocus(true)
                     m.top.findNode("VertSlider").reverse = false
                     m.top.findNode("extrasFader").reverse = false
@@ -453,17 +447,15 @@ function onKeyEvent(key as string, press as boolean) as boolean
         end if
 
         if key = "left"
-            print "left"
             if m.top.selectedButtonIndex > 0
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
-                m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
+                m.top.selectedButtonIndex = m.previouslySelectedButtonIndex - 1
                 return true
             end if
             return false
         end if
 
         if key = "right"
-            print "right"
             m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
             if m.top.selectedButtonIndex < m.buttonCount - 1
                 m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1

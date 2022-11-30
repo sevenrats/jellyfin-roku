@@ -12,6 +12,8 @@
     <field id="directPlaySupported" type="boolean" />
     <field id="systemOverlay" type="boolean" value="false" />
     <field id="showID" type="string" />
+    <field id="lastFocus" type="node" />
+
 
     <field id="transcodeParams" type="assocarray" />
     <field id="transcodeAvailable" type="boolean" value="false" />
