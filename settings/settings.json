@@ -99,6 +99,13 @@
                         "settingName": "ui.home.splashBackground",
                         "type": "bool",
                         "default": "false"
+                    },
+                    {
+                        "title": "Render blurhashes",
+                        "description": "Use an experimental algorithm to render image blurhashes. This may slow down page load, and may be associated with crashes.",
+                        "settingName": "ui.design.renderBlurhashes",
+                        "type": "bool",
+                        "default": "false"
                     }
                 ]
             },

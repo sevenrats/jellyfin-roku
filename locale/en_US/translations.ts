@@ -817,5 +817,15 @@
             <translation>Unable to find any albums or songs belonging to this artist</translation>
             <extracomment>Popup message when we find no audio data for an artist</extracomment>
         </message>
+        <message>
+            <source>Render blurhashes</source>
+            <translation>Render blurhashes</translation>
+            <extracomment>Name of a setting - should this app render blurhashes or not</extracomment>
+        </message>
+        <message>
+            <source>Use an experimental algorithm to render image blurhashes. This may slow down page load, and may be associated with crashes.</source>
+            <translation>Use an experimental algorithm to render image blurhashes. This may slow down page load, and may be associated with crashes.</translation>
+            <extracomment>Description of a setting - should this app render blurhashes or not</extracomment>
+        </message>
     </context>
 </TS>

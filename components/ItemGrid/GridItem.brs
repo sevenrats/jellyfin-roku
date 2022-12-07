@@ -31,7 +31,7 @@ sub itemContentChanged()
 
     if itemData = invalid then return
 
-    if itemData.posterBlurhashUrl = ""
+    if itemData.posterBlurhashUrl = "" or get_user_setting("ui.design.renderBlurhashes") = "false"
         ' Set Random background colors from pallet
         m.posterText.visible = true
         posterBackgrounds = m.global.constants.poster_bg_pallet
