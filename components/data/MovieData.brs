@@ -42,9 +42,13 @@ sub setPoster()
         if m.top.json.ImageTags.Primary <> invalid
             imgParams = { "maxHeight": 440, "maxWidth": 295 }
             m.top.posterURL = ImageURL(m.top.json.id, "Primary", imgParams)
-            bh = m.top.json.ImageBlurHashes.Primary[m.top.json.ImageTags.Primary]
-            if bh <> "" and get_user_setting("ui.design.renderBlurhashes") = "true"
-                m.top.posterBlurHashUrl = fakeblurhash_render(bh, imgParams.maxWidth, imgParams.maxHeight)
+            if m.top.json.ImageBlurHashes.Primary <> invalid
+                bh = m.top.json.ImageBlurHashes.Primary[m.top.json.ImageTags.Primary]
+                if bh <> "" and get_user_setting("ui.design.renderBlurhashes") = "true"
+                    timer = CreateObject("roTimeSpan") ' DELETE THIS TEMPORARY LINE OF DEV CODE
+                    m.top.posterBlurHashUrl = fakeblurhash_render(bh, imgParams.maxWidth, imgParams.maxHeight)
+                    print "Took " + Str(timer.totalMilliseconds()) + " milliseconds to render a blurhash in MoviesData."' DELETE THIS TEMPORARY LINE OF DEV CODE
+                end if
             end if
         else if m.top.json.BackdropImageTags[0] <> invalid
             imgParams = { "maxHeight": 440 }
