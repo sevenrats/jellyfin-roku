@@ -910,5 +910,35 @@
             <translation>Support Direct Play of MPEG-4 content. This may need to be disabled for playback of DIVX encoded video files.</translation>
             <extracomment>Settings Menu - Description for option</extracomment>
         </message>
+        <message>
+            <source>Forced Transcoding</source>
+            <translation>Forced Transcoding</translation>
+            <extracomment>Name of a setting group - settings related to forcing transcoding</extracomment>
+        </message>
+        <message>
+            <source>Force specific containers to transcode</source>
+            <translation>Force specific containers to transcode</translation>
+            <extracomment>Description of a setting group - settings related to forcing transcoding</extracomment>
+        </message>
+        <message>
+            <source>MKV</source>
+            <translation>MKV</translation>
+            <extracomment>Name of container used in settings menu</extracomment>
+        </message>
+        <message>
+            <source>MP4</source>
+            <translation>MP4</translation>
+            <extracomment>Name of container used in settings menu</extracomment>
+        </message>
+        <message>
+            <source>Force .mkv files to transcode by pretending we don't support any codecs.</source>
+            <translation>Force .mkv files to transcode by pretending we don't support any codecs.</translation>
+            <extracomment>Description of a setting - force transcoding of mkv videos</extracomment>
+        </message>
+        <message>
+            <source>Force .mp4 files to transcode by pretending we don't support any codecs.</source>
+            <translation>Force .mp4 files to transcode by pretending we don't support any codecs.</translation>
+            <extracomment>Description of a setting - force transcoding of mp4 videos</extracomment>
+        </message>
     </context>
 </TS>

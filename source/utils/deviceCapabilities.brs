@@ -334,6 +334,14 @@ function GetDirectPlayProfiles() as object
         audio = audio + ",eac3"
     end if
 
+    if get_user_setting("playback.forceTranscode.mp4") = "true"
+        mp4Video = ""
+    end if
+
+    if get_user_setting("playback.forceTranscode.mkv") = "true"
+        mkvVideo = ""
+    end if
+
     return [
         {
             "Container": "mp4,m4v,mov",

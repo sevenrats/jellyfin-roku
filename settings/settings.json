@@ -4,51 +4,76 @@
         "description": "Settings relating to playback and supported codec and media types.",
         "children": [
             {
-                "title": "AV1 Support",
-                "description": "** EXPERIMENTAL** Support Direct Play of AV1 content if this Roku device supports it.",
-                "settingName": "playback.av1",
-                "type": "bool",
-                "default": "false"
+                "title": "Codec Support",
+                "description": "Enable or disable Direct Play support for certain codecs",
+                "children": [
+                    {
+                        "title": "AV1",
+                        "description": "** EXPERIMENTAL** Support Direct Play of AV1 content if this Roku device supports it.",
+                        "settingName": "playback.av1",
+                        "type": "bool",
+                        "default": "false"
+                    },
+                    {
+                        "title": "MPEG-2",
+                        "description": "Support Direct Play of MPEG-2 content (e.g., Live TV). This will prevent transcoding of MPEG-2 content, but uses significantly more bandwidth.",
+                        "settingName": "playback.mpeg2",
+                        "type": "bool",
+                        "default": "false"
+                    },
+                    {
+                        "title": "MPEG-4",
+                        "description": "Support Direct Play of MPEG-4 content. This may need to be disabled for playback of DIVX encoded video files.",
+                        "settingName": "playback.mpeg4",
+                        "type": "bool",
+                        "default": "true"
+                    }
+                ]
             },
             {
-                "title": "MPEG-2 Support",
-                "description": "Support Direct Play of MPEG-2 content (e.g., Live TV). This will prevent transcoding of MPEG-2 content, but uses significantly more bandwidth.",
-                "settingName": "playback.mpeg2",
-                "type": "bool",
-                "default": "false"
+                "title": "Forced Transcoding",
+                "description": "Force specific containers to transcode",
+                "children": [
+                    {
+                        "title": "MKV",
+                        "description": "Force .mkv files to transcode by pretending we don't support any codecs",
+                        "settingName": "playback.forceTranscode.mkv",
+                        "type": "bool",
+                        "default": "true"
+                    },
+                    {
+                        "title": "MP4",
+                        "description": "Force .mp4 files to transcode by pretending we don't support any codecs.",
+                        "settingName": "playback.forceTranscode.m",
+                        "type": "bool",
+                        "default": "true"
+                    }
+                ]
             },
             {
-                "title": "MPEG-4 Support",
-                "description": "Support Direct Play of MPEG-4 content. This may need to be disabled for playback of DIVX encoded video files.",
-                "settingName": "playback.mpeg4",
-                "type": "bool",
-                "default": "true"
-            },
-            {
-                "title": "Direct Play H.264 Unsupported Profile Levels",
-                "description": "Attempt Direct Play for H.264 media with unsupported profile levels before falling back to transcoding if it fails.",
-                "settingName": "playback.tryDirect.h264ProfileLevel",
-                "type": "bool",
-                "default": "true"
-            },
-            {
-                "title": "Direct Play HEVC Unsupported Profile Levels",
-                "description": "Attempt Direct Play for HEVC media with unsupported profile levels before falling back to trancoding if it fails.",
-                "settingName": "playback.tryDirect.hevcProfileLevel",
-                "type": "bool",
-                "default": "true"
+                "title": "Profile Level Support",
+                "description": "Attempt Direct Play of potentially unsupported profile levels",
+                "children": [
+                    {
+                        "title": "H.264",
+                        "description": "Attempt Direct Play for H.264 media with unsupported profile levels before falling back to transcoding if it fails.",
+                        "settingName": "playback.tryDirect.h264ProfileLevel",
+                        "type": "bool",
+                        "default": "true"
+                    },
+                    {
+                        "title": "HEVC",
+                        "description": "Attempt Direct Play for HEVC media with unsupported profile levels before falling back to trancoding if it fails.",
+                        "settingName": "playback.tryDirect.hevcProfileLevel",
+                        "type": "bool",
+                        "default": "true"
+                    }
+                ]
             },
             {
                 "title": "Cinema Mode",
                 "description": "Cinema Mode brings the theater experience straight to your living room with the ability to play custom intros before the main feature.",
                 "settingName": "playback.cinemamode",
-                "type": "bool",
-                "default": "false"
-            },
-            {
-                "title": "Text Subtitles Only",
-                "description": "Only display text subtitles to minimize transcoding.",
-                "settingName": "playback.subs.onlytext",
                 "type": "bool",
                 "default": "false"
             }
@@ -68,6 +93,13 @@
                         "settingName": "ui.details.maxdaysnextup",
                         "type": "integer",
                         "default": "365"
+                    },
+                    {
+                        "title": "Use Splashscreen as Home Background",
+                        "description": "Use generated splashscreen image as Jellyfin's home background. Jellyfin will need to be closed and reopened for change to take effect.",
+                        "settingName": "ui.home.splashBackground",
+                        "type": "bool",
+                        "default": "false"
                     }
                 ]
             },
@@ -118,13 +150,6 @@
                         "title": "Hide Clock",
                         "description": "Hides all clocks in Jellyfin. Jellyfin will need to be closed and reopened for change to take effect.",
                         "settingName": "ui.design.hideclock",
-                        "type": "bool",
-                        "default": "false"
-                    },
-                    {
-                        "title": "Use Splashscreen as Home Background",
-                        "description": "Use generated splashscreen image as Jellyfin's home background. Jellyfin will need to be closed and reopened for change to take effect.",
-                        "settingName": "ui.home.splashBackground",
                         "type": "bool",
                         "default": "false"
                     }
