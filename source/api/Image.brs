@@ -54,6 +54,23 @@ function ImageURL(id, version = "Primary", params = {})
     return buildURL(url, params)
 end function
 
+function ImageURL_API(id, version = "Primary", params = {})
+    ' set defaults
+    if params.maxHeight = invalid
+        param = { "maxHeight": "384" }
+        params.append(param)
+    end if
+    if params.maxWidth = invalid
+        param = { "maxWidth": "196" }
+        params.append(param)
+    end if
+    if params.quality = invalid
+        param = { "quality": "90" }
+        params.append(param)
+    end if
+    return api_API().items.getimageurl(id, version, 0, params)
+end function
+
 function UserImageURL(id, params = {})
     ' set defaults
     if params.maxHeight = invalid
