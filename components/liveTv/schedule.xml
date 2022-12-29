@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="Schedule" extends="JFGroup">
   <children>
-    <rectangle translation="[0,150]" width="1920" height="930" color="#262626" />
+    <rectangle id="rec" translation="[0,150]" width="1920" height="930" color="#262626" />
 
     <!-- Selected Item Details -->
     <ProgramDetails id="detailsPane" focusable="true" />
 
     <TimeGrid id="scheduleGrid" translation="[0,600]" 
-              automaticLoadingDataFeedback="false" showLoadingDataFeedback="true"
+              automaticLoadingDataFeedback="true" showLoadingDataFeedback="false"
               focusBitmapUri="pkg:/images/white.9.png" focusBitmapBlendColor="#006fab" 
               programTitleFocusedColor="#ffffff" iconFocusedColor="#ff0000"
-              showPastTimeScreen="true" pastTimeScreenBlendColor="#555555"
+              showPastTimeScreen="true" pastTimeScreenBlendColor="#555555" channelNoDataText="Loading"
               />
     <Spinner id="spinner" translation="[900, 450]" />
     <Animation id="gridMoveAnimation" duration="1" repeat="false" easeFunction="outQuad" >

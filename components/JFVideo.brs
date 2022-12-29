@@ -38,6 +38,9 @@ sub init()
     m.extras = m.top.findNode("extrasGrid")
     m.extrasGrp = m.top.findnode("extrasContainer")
     m.extrasGrp.opacity = 0
+
+    m.showGuideAnimation = m.top.findNode("showGuide")
+    m.guideIntialLoad = false
 end sub
 
 '
@@ -365,12 +368,47 @@ sub onButtonSelectedChange()
 
 end sub
 
+sub showTVGuide()
+    if m.guideIntialLoad = false
+        m.tvGuide = createObject("roSGNode", "Schedule")
+        m.tvGuide.removeChild(m.tvGuide.findNode("rec"))
+        m.tvGuide.removeChild(m.tvGuide.findNode("detailsPane"))
+    end if
+    m.tvGuide.observeField("watchChannel", "onChannelSelected")
+    m.top.appendChild(m.tvGuide)
+    m.tvGuide.visible = true
+    m.tvGuide.setFocus(true)
+    m.buttonGrp.setFocus(false)
+    m.buttonGrp.visible = false
+    m.showGuideAnimation.control = "start"
+    m.tvGuide.translation = "[0, 200]"
+    m.tvGuide.lastFocus = "videoPlayer"
+
+end sub
+
+sub onChannelSelected(msg)
+    node = msg.getRoSGNode()
+    m.top.lastFocus = lastFocusedChild(node)
+    if node.watchChannel <> invalid
+        ' Clone the node when it's reused/update in the TimeGrid it doesn't automatically start playing
+        m.top.selectedItem = node.watchChannel.clone(false)
+    end if
+    print msg
+end sub
+
 
 
 function onKeyEvent(key as string, press as boolean) as boolean
     'castGrp = m.top.findNode("extrasGrid")
     if key = "back" and m.top.control = "pause"
         m.top.control = "resume"
+        return true
+    end if
+    if key = "back" and m.tvGuide?.visible = true
+        m.top.removeChild(m.tvGuide)
+        'm.tvGuide.visible = false
+        m.tvGuide.setFocus(false)
+        m.top.setFocus(true)
         return true
     end if
 
@@ -406,6 +444,11 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if press
                 selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
                 selectedButton.selected = not selectedButton.selected
+                if selectedButton.id = "guide"
+                    showTVGuide()
+                    m.guideIntialLoad = true
+                    return true
+                end if
                 if selectedButton.id = "cc"
                     Subtitles()
                 end if

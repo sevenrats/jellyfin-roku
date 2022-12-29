@@ -4,6 +4,7 @@
     <field id="backPressed" type="boolean" alwaysNotify="true" />
     <field id="selectSubtitlePressed" type="boolean" alwaysNotify="true" />
     <field id="selectPlaybackInfoPressed" type="boolean" alwaysNotify="true" />
+    
     <field id="PlaySessionId" type="string" />
     <field id="Subtitles" type="array" />
     <field id="SelectedSubtitle" type="integer" />
@@ -26,6 +27,9 @@
     <field id="audioIndex" type="integer" />
     <field id="runTime" type="integer" />
     <field id="selectedButtonIndex" type="integer" value="-1" />
+
+    <field id="selectedItem" type="node" alwaysNotify="true" />
+
 
   </interface>
   <script type="text/brightscript" uri="JFVideo.brs" />
@@ -53,6 +57,9 @@
     </Animation>
     <Animation id="hideNextEpisodeButton" duration=".2" repeat="false" easeFunction="inQuad">
       <FloatFieldInterpolator key="[0.0, 1.0]" keyValue="[.9, 0]" fieldToInterp="nextEpisode.opacity" />
+    </Animation>
+    <Animation id="showGuide" duration="1.0" repeat="false" easeFunction="inQuad">
+      <FloatFieldInterpolator key="[0.0, 1.0]" keyValue="[0.0, 1.0]" fieldToInterp="Schedule.opacity" />
     </Animation>
   </children>
 </component>
