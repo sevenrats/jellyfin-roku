@@ -373,16 +373,16 @@ sub showTVGuide()
         m.tvGuide = createObject("roSGNode", "Schedule")
         m.tvGuide.removeChild(m.tvGuide.findNode("rec"))
         m.tvGuide.removeChild(m.tvGuide.findNode("detailsPane"))
+        m.tvGuide.observeField("watchChannel", "onChannelSelected")
+        m.tvGuide.visible = true
+        m.tvGuide.setFocus(true)
+        m.tvGuide.translation = "[0, 200]"
+        m.tvGuide.lastFocus = "videoPlayer"
     end if
-    m.tvGuide.observeField("watchChannel", "onChannelSelected")
     m.top.appendChild(m.tvGuide)
-    m.tvGuide.visible = true
-    m.tvGuide.setFocus(true)
     m.buttonGrp.setFocus(false)
     m.buttonGrp.visible = false
     m.showGuideAnimation.control = "start"
-    m.tvGuide.translation = "[0, 200]"
-    m.tvGuide.lastFocus = "videoPlayer"
 
 end sub
 
@@ -390,10 +390,9 @@ sub onChannelSelected(msg)
     node = msg.getRoSGNode()
     m.top.lastFocus = lastFocusedChild(node)
     if node.watchChannel <> invalid
-        ' Clone the node when it's reused/update in the TimeGrid it doesn't automatically start playing
-        m.top.selectedItem = node.watchChannel.clone(false)
+        m.top.selectedItem = node.watchChannel.id
+        m.top.control = "stop"
     end if
-    print msg
 end sub
 
 
