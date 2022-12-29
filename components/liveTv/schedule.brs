@@ -28,6 +28,7 @@ sub init()
     m.channelIndex = {}
 
     m.spinner = m.top.findNode("spinner")
+    m.spinner.visible = false
 end sub
 
 sub channelFilterSet()
@@ -60,7 +61,6 @@ sub onChannelsLoaded()
 
     counter = 0
     channelIdList = ""
-
     'if search returns channels
     if m.LoadChannelsTask.channels.count() > 0
         for each item in m.LoadChannelsTask.channels
@@ -90,7 +90,6 @@ sub onChannelsLoaded()
         m.LoadChannelsTask.channels = []
 
     end if
-
 end sub
 
 ' When LoadScheduleTask completes (initial or more data) and we have a schedule to display
@@ -114,7 +113,7 @@ sub onScheduleLoaded()
 
         channel.appendChild(item)
     end for
-
+    m.scheduleGrid.channelNoDataText = tr("No Program Data")
     m.scheduleGrid.showLoadingDataFeedback = false
     m.scheduleGrid.setFocus(true)
     m.LoadScheduleTask.schedule = []
@@ -172,13 +171,12 @@ end sub
 
 sub onProgramSelected()
     ' If there is no program data - view the channel
-    if m.detailsPane.programDetails = invalid
+    if m.detailsPane.programDetails = invalid or m.top.getChildCount() = 3
         m.top.watchChannel = m.scheduleGrid.content.GetChild(m.scheduleGrid.programFocusedDetails.focusChannelIndex)
-        return
+    else
+        'Move Grid Down
+        focusProgramDetails(true)
     end if
-
-    ' Move Grid Down
-    focusProgramDetails(true)
 end sub
 
 ' Move the TV Guide Grid down or up depending whether details are selected
@@ -206,12 +204,16 @@ end sub
 ' Handle user selecting "Watch Channel" from Program Details
 sub onWatchChannelSelected()
 
-    if m.detailsPane.watchSelectedChannel = false then return
+    if m.detailsPane.programDetails = invalid or m.top.getChildCount() = 3
+        m.top.watchChannel = m.scheduleGrid.content.GetChild(m.scheduleGrid.programFocusedDetails.focusChannelIndex)
+    else
+        if m.detailsPane.watchSelectedChannel = false then return
 
-    ' Set focus back to grid before showing channel, to ensure grid has focus when we return
-    focusProgramDetails(false)
+        ' Set focus back to grid before showing channel, to ensure grid has focus when we return
+        focusProgramDetails(false)
 
-    m.top.watchChannel = m.detailsPane.channel
+        m.top.watchChannel = m.detailsPane.channel
+    end if
 end sub
 
 ' As user scrolls grid, check if more data requries to be loaded
@@ -287,7 +289,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         detailsGrp.setFocus(false)
         gridGrp.setFocus(true)
         return true
-    else if key = "back"
+    else if key = "back" and m.top.lastFocus <> invalid
         m.LoadChannelsTask.control = "stop"
         m.global.sceneManager.callFunc("popScene")
         return true
