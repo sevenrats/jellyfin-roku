@@ -512,6 +512,18 @@ sub CreateSidePanel(buttons, options)
     group.options = options
 end sub
 
+'maybe for future use.....
+function CreateTVGuide()
+    ' Guide view
+    group = CreateObject("roSGNode", "Schedule")
+    group.signalBeacon("EPGLaunchInitiate") ' Required Roku Performance monitoring
+    group.observeField("watchChannel", "onChannelSelected")
+    group.observeField("focusedChannel", "onChannelFocused")
+
+    return group
+end function
+
+
 function CreateVideoPlayerGroup(video_id, mediaSourceId = invalid, audio_stream_idx = 1, forceTranscoding = false, showIntro = true, allowResumeDialog = true)
 
     ' Video is Playing
