@@ -424,7 +424,11 @@ sub Main (args as dynamic) as void
             end if
         else if isNodeEvent(msg, "state")
             node = msg.getRoSGNode()
-            if m.selectedItemType = "TvChannel" and node.state = "finished"
+
+            if LCase(m.selectedItemType) = "tvchannel" and node.selectedItem <> ""
+                video = CreateVideoPlayerGroup(node.selectedItem)
+                m.global.sceneManager.callFunc("pushScene", video)
+            else if m.selectedItemType = "TvChannel" and node.state = "finished"
                 video = CreateVideoPlayerGroup(node.id)
                 m.global.sceneManager.callFunc("pushScene", video)
                 m.global.sceneManager.callFunc("deleteSceneAtIndex", 2)
