@@ -5,6 +5,7 @@
     <field id="selectSubtitlePressed" type="boolean" alwaysNotify="true" />
     <field id="selectPlaybackInfoPressed" type="boolean" alwaysNotify="true" />
 
+
     <field id="PlaySessionId" type="string" />
     <field id="Subtitles" type="array" />
     <field id="SelectedSubtitle" type="integer" />
@@ -25,6 +26,7 @@
     <field id="videoId" type="string" />
     <field id="mediaSourceId" type="string" />
     <field id="audioIndex" type="integer" />
+    <field id="runTime" type="integer" />
     <field id="selectedButtonIndex" type="integer" value="-1" />
 
     <field id="selectedItem" type="string" alwaysNotify="true" />

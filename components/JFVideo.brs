@@ -143,25 +143,6 @@ sub onPositionChanged()
     if not isValid(m.dialog)
         checkTimeToDisplayNextEpisode()
     end if
-    'm.trick = m.top.findNode("trickPlayBar")
-    m.top.playbackActionButtons = [
-        { "text": tr("Guide"), "icon": "pkg:/images/icons/guide-default.png", "focusIcon": "pkg:/images/icons/guide-selected.png" },
-        { "text": tr("Info"), "icon": "pkg:/images/icons/info-default.png", "focusIcon": "pkg:/images/icons/info-selected.png" },
-        { "text": tr("Cast"), "icon": "pkg:/images/icons/cast-default.png", "focusIcon": "pkg:/images/icons/cast-selected.png" },
-        { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png", "focusIcon": "pkg:/images/icons/loop-selected.png" },
-        { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png", "focusIcon": "pkg:/images/icons/favorite_selected.png" }
-    ]
-    'm.top.playbackActionButtons = [
-    '    { "text": tr("Guide"), "icon": "pkg:/images/icons/guide-default.png", "focusIcon": "pkg:/images/icons/guide-selected.png" },
-    '    { "text": tr("Info"), "icon": "pkg:/images/icons/info-default.png", "focusIcon": "pkg:/images/icons/info-selected.png" },
-    '   { "text": tr("Cast"), "icon": "pkg:/images/icons/cast-default.png", "focusIcon": "pkg:/images/icons/cast-selected.png" },
-    '  { "text": tr("Loop"), "icon": "pkg:/images/icons/loop-default.png", "focusIcon": "pkg:/images/icons/loop-selected.png" },
-    ' { "text": tr("Favorite"), "icon": "pkg:/images/icons/favorite.png", "focusIcon": "pkg:/images/icons/favorite_selected.png" }
-    ']
-
-    m.buttonGrp = m.top.findNode("buttons")
-    m.buttonGrp.observeField("escape", "onButtonGroupEscaped")
-    m.buttonGrp.visible = false
 
     m.checkedForNextEpisode = false
     m.movieInfo = false
