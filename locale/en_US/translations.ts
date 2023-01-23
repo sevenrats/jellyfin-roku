@@ -303,6 +303,16 @@
             <translation>Movies</translation>
         </message>
         <message>
+            <source>Movies (Presentation)</source>
+            <translation>Movies (Presentation)</translation>
+            <extracomment>Movie library view option</extracomment>
+        </message>
+        <message>
+            <source>Movies (Grid)</source>
+            <translation>Movies (Grid)</translation>
+            <extracomment>Movie library view option</extracomment>
+        </message>
+        <message>
             <source>TV Shows</source>
             <translation>TV Shows</translation>
         </message>
@@ -484,7 +494,7 @@
             <translation>Playback</translation>
             <extracomment>Title for Playback section in user setting screen.</extracomment>
         </message>
-        
+
         <message>
             <source>Codec Support</source>
             <translation>Codec Support</translation>
@@ -505,7 +515,7 @@
             <translation>Support Direct Play of MPEG-2 content (e.g., Live TV). This will prevent transcoding of MPEG-2 content, but uses significantly more bandwidth.</translation>
             <extracomment>Settings Menu - Description for option</extracomment>
         </message>
-         <message>
+        <message>
             <source>MPEG-4</source>
             <translation>MPEG-4</translation>
             <extracomment>Name of codec used in settings menu</extracomment>
@@ -1002,6 +1012,82 @@
             <source>Loop</source>
             <translation>Loop</translation>
             <extracomment>Trickplaybar button, Loop</extracomment>
+        </message>
+        <message>
+            <source>Movie Library Default View</source>
+            <translation>Movie Library Default View</translation>
+            <extracomment>Settings Menu - Title for option</extracomment>
+        </message>
+        <message>
+            <source>Default view for Movie Libraries.</source>
+            <translation>Default view for Movie Libraries.</translation>
+            <extracomment>Settings Menu - Description for option</extracomment>
+        </message>
+        <message>
+            <source>Movies (Presentation)</source>
+            <translation>Movies (Presentation)</translation>
+        </message>
+        <message>
+            <source>Movies (Grid)</source>
+            <translation>Movies (Grid)</translation>
+        </message>
+        <message>
+            <source>Movie Library Grid Titles</source>
+            <translation>Movie Library Grid Titles</translation>
+            <extracomment>Settings Menu - Title for option</extracomment>
+        </message>
+        <message>
+            <source>Select when to show titles.</source>
+            <translation>Select when to show titles.</translation>
+            <extracomment>Settings Menu - Description for option</extracomment>
+        </message>
+        <message>
+            <source>Show On Hover</source>
+            <translation>Show On Hover</translation>
+        </message>
+        <message>
+            <source>Always Show</source>
+            <translation>Always Show</translation>
+        </message>
+        <message>
+            <source>Always Hide</source>
+            <translation>Always Hide</translation>
+        </message>
+        <message>
+            <source>Artists (Presentation)</source>
+            <translation>Artists (Presentation)</translation>
+        </message>
+        <message>
+            <source>Artists (Grid)</source>
+            <translation>Artists (Grid)</translation>
+        </message>
+        <message>
+            <source>Song</source>
+            <translation>Song</translation>
+        </message>
+        <message>
+            <source>Songs</source>
+            <translation>Songs</translation>
+        </message>
+        <message>
+            <source>Album</source>
+            <translation>Album</translation>
+        </message>
+        <message>
+            <source>Albums</source>
+            <translation>Albums</translation>
+        </message>
+        <message>
+            <source>View All</source>
+            <translation>View All</translation>
+        </message>
+        <message>
+            <source>Disable Community Rating for Episodes</source>
+            <translation>Disable Community Rating for Episodes</translation>
+        </message>
+        <message>
+            <source>If enabled, the star and community rating for episodes of a TV show will be removed. This is to prevent spoilers of an upcoming good/bad episode.</source>
+            <translation>If enabled, the star and community rating for episodes of a TV show will be removed. This is to prevent spoilers of an upcoming good/bad episode.</translation>
         </message>
     </context>
 </TS>
