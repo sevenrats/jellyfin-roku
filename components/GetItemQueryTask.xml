@@ -5,7 +5,7 @@
         <field id="videoID" type="string" />
         <field id="getItemQueryData" type="assocarray" />
     </interface>
-    <script type="text/brightscript" uri="getItemQueryTask.brs" />
+    <script type="text/brightscript" uri="GetItemQueryTask.brs" />
     <script type="text/brightscript" uri="pkg:/source/utils/config.brs" />
     <script type="text/brightscript" uri="pkg:/source/roku_modules/api/api.brs" />
 </component>

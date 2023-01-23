@@ -348,23 +348,20 @@ sub setupButtons()
     m.buttonGrp = m.top.findNode("buttons")
     m.buttonCount = m.buttonGrp.getChildCount()
 
-    m.previouslySelectedButtonIndex = -1
-
+    'm.previouslySelectedButtonIndex = -1
+    print "Running setupButtons SUB()"
     m.top.observeField("selectedButtonIndex", "onButtonSelectedChange")
-    m.top.selectedButtonIndex = 0
 end sub
 
 ' Event handler when user selected a different playback button
 sub onButtonSelectedChange()
     ' Change previously selected button back to default image
-    if m.previouslySelectedButtonIndex > -1
-        previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
-        previousSelectedButton.focus = false
-    end if
-
+    previousSelectedButton = m.buttonGrp.getChild(m.previouslySelectedButtonIndex)
+    previousSelectedButton.focus = false
     ' Change selected button image to selected image
     selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
     selectedButton.focus = true
+    print "button focus index:  " m.top.selectedButtonIndex
 end sub
 
 sub showTVGuide()
@@ -438,6 +435,10 @@ function onKeyEvent(key as string, press as boolean) as boolean
     end if
 
     if m.buttonGrp.visible = true
+        print "button visible"
+        'make first button highlighted
+        selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+        selectedButton.focus = true
         if key = "OK"
             if press
                 selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
@@ -474,17 +475,12 @@ function onKeyEvent(key as string, press as boolean) as boolean
         if key = "left"
             if m.top.selectedButtonIndex > 0
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
-                m.top.selectedButtonIndex = m.previouslySelectedButtonIndex - 1
-                return true
+                m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
             end if
-            return false
-        end if
-
-        if key = "right"
+            return true
+        else if key = "right"
             m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
-            if m.top.selectedButtonIndex < m.buttonCount - 1
-                m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
-            end if
+            if m.top.selectedButtonIndex < m.buttonCount - 1 then m.top.selectedButtonIndex = m.top.selectedButtonIndex + 1
             return true
         end if
         return false
