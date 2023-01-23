@@ -150,7 +150,6 @@ end sub
 
 '
 ' When Video Player state changes
-' When Video Player state changes
 sub onState(msg)
     ' When buffering, start timer to monitor buffering process
     if m.top.state = "buffering" and m.bufferCheckTimer <> invalid
@@ -347,9 +346,6 @@ sub setupButtons()
     m.buttonGrp.visible = false
     m.buttonGrp = m.top.findNode("buttons")
     m.buttonCount = m.buttonGrp.getChildCount()
-
-    'm.previouslySelectedButtonIndex = -1
-    print "Running setupButtons SUB()"
     m.top.observeField("selectedButtonIndex", "onButtonSelectedChange")
 end sub
 
@@ -361,7 +357,6 @@ sub onButtonSelectedChange()
     ' Change selected button image to selected image
     selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
     selectedButton.focus = true
-    print "button focus index:  " m.top.selectedButtonIndex
 end sub
 
 sub showTVGuide()
@@ -387,21 +382,21 @@ sub onChannelSelected(msg)
     m.top.lastFocus = lastFocusedChild(node)
     if node.watchChannel <> invalid
         m.top.selectedItem = node.watchChannel.id
+        m.global.sceneManager.callfunc("clearPreviousScene")
         m.top.control = "stop"
+
     end if
 end sub
 
 
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    'castGrp = m.top.findNode("extrasGrid")
     if key = "back" and m.top.control = "pause"
         m.top.control = "resume"
         return true
     end if
     if key = "back" and m.tvGuide?.visible = true
         m.top.removeChild(m.tvGuide)
-        'm.tvGuide.visible = false
         m.tvGuide.setFocus(false)
         m.top.setFocus(true)
         return true
@@ -435,7 +430,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
     end if
 
     if m.buttonGrp.visible = true
-        print "button visible"
         'make first button highlighted
         selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
         selectedButton.focus = true
@@ -472,7 +466,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
             end if
         end if
 
-        if key = "left"
+        if key = "left" and press
             if m.top.selectedButtonIndex > 0
                 m.previouslySelectedButtonIndex = m.top.selectedButtonIndex
                 m.top.selectedButtonIndex = m.top.selectedButtonIndex - 1
