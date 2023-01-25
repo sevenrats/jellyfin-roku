@@ -20,7 +20,11 @@ sub init()
 end sub
 
 sub itemContentChanged()
-    m.backdrop.blendColor = "#101010"
+    if m.top.itemContent.posterBlurhashUrl <> invalid:
+        m.backdrop.uri = m.top.itemContent.posterBlurhashUrl
+    else
+        m.backdrop.blendColor = "#101010"
+    end if
 
     m.title.visible = false
 

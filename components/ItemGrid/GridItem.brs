@@ -30,13 +30,17 @@ end sub
 
 sub itemContentChanged()
 
-    ' Set Random background colors from pallet
-    posterBackgrounds = m.global.constants.poster_bg_pallet
-    m.backdrop.blendColor = posterBackgrounds[rnd(posterBackgrounds.count()) - 1]
-
     itemData = m.top.itemContent
 
     if itemData = invalid then return
+
+    if itemData.posterBlurhashUrl = ""
+        m.posterText.visible = true
+        m.backdrop.blendColor = "#101010"
+    else
+        m.backdrop.uri = itemData.posterBlurhashUrl
+        m.posterText.visible = false
+    end if
 
     if itemData.type = "Movie"
         m.itemPoster.uri = itemData.PosterUrl

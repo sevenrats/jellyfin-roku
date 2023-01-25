@@ -35,6 +35,7 @@
     "bgv": "npm:button-group-vert@^1.0.2",
     "brighterscript-formatter": "^1.6.8",
     "sob": "npm:slide-out-button@^1.0.1",
-    "intKeyboard": "npm:integer-keyboard@^1.0.12"
+    "intKeyboard": "npm:integer-keyboard@^1.0.12",
+    "fake-blurhash": "npm:fake-blurhash@^1.0.2"
   }
 }
