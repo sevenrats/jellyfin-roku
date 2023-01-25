@@ -8,9 +8,12 @@ sub init()
 
     m.itemPoster.observeField("loadStatus", "onPosterLoadStatusChanged")
 
+    m.unplayedCount = m.top.findNode("unplayedCount")
+    m.unplayedEpisodeCount = m.top.findNode("unplayedEpisodeCount")
+
     m.itemText.translation = [0, m.itemPoster.height + 7]
 
-    m.alwaysShowTitles = get_user_setting("itemgrid.alwaysShowTitles") = "true"
+    m.alwaysShowTitles = get_user_setting("itemgrid.gridTitles") = "showalways"
     m.itemText.visible = m.alwaysShowTitles
 
     ' Add some padding space when Item Titles are always showing
@@ -27,25 +30,26 @@ end sub
 
 sub itemContentChanged()
 
+    ' Set Random background colors from pallet
+    posterBackgrounds = m.global.constants.poster_bg_pallet
+    m.backdrop.blendColor = posterBackgrounds[rnd(posterBackgrounds.count()) - 1]
+
     itemData = m.top.itemContent
 
     if itemData = invalid then return
-
-    if itemData.posterBlurhashUrl = "" or get_user_setting("ui.design.renderBlurhashes") = "false"
-        ' Set Random background colors from pallet
-        m.posterText.visible = true
-        posterBackgrounds = m.global.constants.poster_bg_pallet
-        m.backdrop.blendColor = posterBackgrounds[rnd(posterBackgrounds.count()) - 1]
-    else
-        m.backdrop.uri = itemData.posterBlurhashUrl
-        m.posterText.visible = false
-    end if
 
     if itemData.type = "Movie"
         m.itemPoster.uri = itemData.PosterUrl
         m.itemIcon.uri = itemData.iconUrl
         m.itemText.text = itemData.Title
     else if itemData.type = "Series"
+        if itemData?.json?.UserData?.UnplayedItemCount <> invalid
+            if itemData.json.UserData.UnplayedItemCount > 0
+                m.unplayedCount.visible = true
+                m.unplayedEpisodeCount.text = itemData.json.UserData.UnplayedItemCount
+            end if
+        end if
+
         m.itemPoster.uri = itemData.PosterUrl
         m.itemIcon.uri = itemData.iconUrl
         m.itemText.text = itemData.Title
@@ -109,6 +113,7 @@ sub itemContentChanged()
     'If Poster not loaded, ensure "blue box" is shown until loaded
     if m.itemPoster.loadStatus <> "ready"
         m.backdrop.visible = true
+        m.posterText.visible = true
     end if
 
     m.posterText.text = m.itemText.text

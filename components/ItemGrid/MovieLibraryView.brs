@@ -22,6 +22,7 @@ sub setupNodes()
     m.overhang = m.top.getScene().findNode("overhang")
     m.genreList = m.top.findNode("genrelist")
     m.infoGroup = m.top.findNode("infoGroup")
+    m.star = m.top.findNode("star")
 end sub
 
 sub init()
@@ -124,9 +125,14 @@ sub loadInitialItems()
     end if
 
     m.sortField = get_user_setting("display." + m.top.parentItem.Id + ".sortField")
-    sortAscendingStr = get_user_setting("display." + m.top.parentItem.Id + ".sortAscending")
     m.filter = get_user_setting("display." + m.top.parentItem.Id + ".filter")
     m.view = get_user_setting("display." + m.top.parentItem.Id + ".landing")
+    sortAscendingStr = get_user_setting("display." + m.top.parentItem.Id + ".sortAscending")
+
+    ' If user has not set a preferred view for this folder, check if they've set a default view
+    if not isValid(m.view)
+        m.view = get_user_setting("itemgrid.movieDefaultView")
+    end if
 
     if not isValid(m.sortField) then m.sortField = "SortName"
     if not isValid(m.filter) then m.filter = "All"
@@ -171,9 +177,12 @@ sub loadInitialItems()
     m.loadItemsTask.studioIds = ""
     m.loadItemsTask.view = "Movies"
     m.itemGrid.translation = "[96, 650]"
+    m.itemGrid.itemSize = "[230, 310]"
+    m.itemGrid.rowHeights = "[310]"
     m.itemGrid.numRows = "2"
     m.selectedMovieOverview.visible = true
     m.infoGroup.visible = true
+    m.top.showItemTitles = "hidealways"
 
     if m.options.view = "Studios" or m.view = "Studios"
         m.itemGrid.translation = "[96, 60]"
@@ -182,6 +191,19 @@ sub loadInitialItems()
         m.top.imageDisplayMode = "scaleToFit"
         m.selectedMovieOverview.visible = false
         m.infoGroup.visible = false
+    else if LCase(m.options.view) = "moviesgrid" or LCase(m.view) = "moviesgrid"
+        m.itemGrid.translation = "[96, 60]"
+        m.itemGrid.numRows = "3"
+        m.selectedMovieOverview.visible = false
+        m.infoGroup.visible = false
+        m.top.showItemTitles = get_user_setting("itemgrid.gridTitles")
+        if LCase(m.top.showItemTitles) = "hidealways"
+            m.itemGrid.itemSize = "[230, 315]"
+            m.itemGrid.rowHeights = "[315]"
+        else
+            m.itemGrid.itemSize = "[230, 350]"
+            m.itemGrid.rowHeights = "[350]"
+        end if
     else if m.options.view = "Genres" or m.view = "Genres"
         m.loadItemsTask.StudioIds = m.top.parentItem.Id
         m.loadItemsTask.view = "Genres"
@@ -201,14 +223,16 @@ end sub
 sub setMoviesOptions(options)
 
     options.views = [
-        { "Title": tr("Movies"), "Name": "Movies" },
+        { "Title": tr("Movies (Presentation)"), "Name": "Movies" },
+        { "Title": tr("Movies (Grid)"), "Name": "MoviesGrid" },
         { "Title": tr("Studios"), "Name": "Studios" },
         { "Title": tr("Genres"), "Name": "Genres" }
     ]
 
     if m.top.parentItem.json.type = "Genre"
         options.views = [
-            { "Title": tr("Movies"), "Name": "Movies" }
+            { "Title": tr("Movies (Presentation)"), "Name": "Movies" },
+            { "Title": tr("Movies (Grid)"), "Name": "MoviesGrid" },
         ]
     end if
 
@@ -226,11 +250,14 @@ sub setMoviesOptions(options)
 
     options.filter = [
         { "Title": tr("All"), "Name": "All" },
-        { "Title": tr("Favorites"), "Name": "Favorites" }
+        { "Title": tr("Favorites"), "Name": "Favorites" },
+        { "Title": tr("Played"), "Name": "Played" },
+        { "Title": tr("Unplayed"), "Name": "Unplayed" },
+        { "Title": tr("Resumable"), "Name": "Resumable" }
     ]
 
     if m.options.view = "Genres" or m.view = "Genres"
-        options.sort = []
+        options.sort = [{ "Title": tr("TITLE"), "Name": "SortName" }]
         options.filter = []
     end if
 
@@ -238,6 +265,10 @@ sub setMoviesOptions(options)
         options.sort = [
             { "Title": tr("TITLE"), "Name": "SortName" },
             { "Title": tr("DATE_ADDED"), "Name": "DateCreated" },
+        ]
+        options.filter = [
+            { "Title": tr("All"), "Name": "All" },
+            { "Title": tr("Favorites"), "Name": "Favorites" }
         ]
     end if
 end sub
@@ -359,6 +390,24 @@ sub ItemDataLoaded(msg)
     m.Loading = false
     'If there are no items to display, show message
     if m.loadedItems = 0
+        m.selectedMovieOverview.visible = false
+        m.infoGroup.visible = false
+
+        m.movieLogo.visible = false
+        m.movieLogo.uri = ""
+
+        m.selectedMovieName.visible = false
+
+        SetName("")
+        SetOverview("")
+        SetOfficialRating("")
+        SetProductionYear("")
+        setFieldText("runtime", "")
+        setFieldText("communityRating", "")
+        setFieldText("criticRatingLabel", "")
+        m.criticRatingIcon.uri = ""
+        m.star.uri = ""
+
         m.emptyText.text = tr("NO_ITEMS").Replace("%1", m.top.parentItem.Type)
         m.emptyText.visible = true
     end if
@@ -430,11 +479,19 @@ sub onItemFocused()
     m.communityRatingGroup.visible = false
     m.criticRatingGroup.visible = false
 
-    if m.options.view = "Studios" or m.view = "Studios"
+    if not isValid(m.selectedFavoriteItem)
+        return
+    end if
+
+    if LCase(m.options.view) = "studios" or LCase(m.view) = "studios"
+        return
+    else if LCase(m.options.view) = "moviesgrid" or LCase(m.view) = "moviesgrid"
         return
     end if
 
     itemData = m.selectedFavoriteItem.json
+
+    m.star.uri = "pkg:/images/sharp_star_white_18dp.png"
 
     if isValid(itemData.communityRating)
         setFieldText("communityRating", int(itemData.communityRating * 10) / 10)
@@ -762,7 +819,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         else
             m.itemGrid.jumpToItem = 0
         end if
-
+        return true
     else if key = "replay" and m.genreList.isinFocusChain()
         if m.resetGrid = true
             m.genreList.animateToItem = 0
