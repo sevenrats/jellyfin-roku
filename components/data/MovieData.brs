@@ -35,23 +35,23 @@ sub setFields()
 end sub
 
 sub setPoster()
-    if m.top.image <> invalid
+    if isValid(m.top.image)
         m.top.posterURL = m.top.image.url
     else
 
-        if m.top.json.ImageTags.Primary <> invalid
+        if isValid(m.top.json.ImageTags.Primary)
             imgParams = { "maxHeight": 440, "maxWidth": 295 }
             m.top.posterURL = ImageURL(m.top.json.id, "Primary", imgParams)
-        else if m.top.json.BackdropImageTags[0] <> invalid
+        else if isValid(m.top.json.BackdropImageTags)
             imgParams = { "maxHeight": 440 }
             m.top.posterURL = ImageURL(m.top.json.id, "Backdrop", imgParams)
-        else if m.top.json.ParentThumbImageTag <> invalid and m.top.json.ParentThumbItemId <> invalid
+        else if isValid(m.top.json.ParentThumbImageTag) and isValid(m.top.json.ParentThumbItemId)
             imgParams = { "maxHeight": 440, "maxWidth": 295 }
             m.top.posterURL = ImageURL(m.top.json.ParentThumbItemId, "Thumb", imgParams)
         end if
 
         ' Add Backdrop Image
-        if m.top.json.BackdropImageTags <> invalid
+        if isValid(m.top.json.BackdropImageTags)
             if m.top.json.BackdropImageTags[0] <> invalid
                 imgParams = { "maxHeight": 720, "maxWidth": 1280 }
                 m.top.backdropURL = ImageURL(m.top.json.id, "Backdrop", imgParams)
