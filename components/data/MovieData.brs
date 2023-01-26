@@ -41,19 +41,19 @@ sub setPoster()
 
         if isValid(m.top.json.ImageTags.Primary)
             imgParams = { "maxHeight": 440, "maxWidth": 295 }
-            m.top.posterURL = ImageURL(m.top.json.id, "Primary", imgParams)
+            imgParams = { "maxHeight": 440, "maxWidth": 295, "Tag": m.top.json.ImageTags.Primary }
         else if isValid(m.top.json.BackdropImageTags)
-            imgParams = { "maxHeight": 440 }
+            imgParams = { "maxHeight": 440, "Tag": m.top.json.BackdropImageTags[0] }
             m.top.posterURL = ImageURL(m.top.json.id, "Backdrop", imgParams)
         else if isValid(m.top.json.ParentThumbImageTag) and isValid(m.top.json.ParentThumbItemId)
-            imgParams = { "maxHeight": 440, "maxWidth": 295 }
+            imgParams = { "maxHeight": 440, "maxWidth": 295, "Tag": m.top.json.ParentThumbImageTag }
             m.top.posterURL = ImageURL(m.top.json.ParentThumbItemId, "Thumb", imgParams)
         end if
 
         ' Add Backdrop Image
         if isValid(m.top.json.BackdropImageTags)
             if m.top.json.BackdropImageTags[0] <> invalid
-                imgParams = { "maxHeight": 720, "maxWidth": 1280 }
+                imgParams = { "maxHeight": 720, "maxWidth": 1280, "Tag": m.top.json.BackdropImageTags[0] }
                 m.top.backdropURL = ImageURL(m.top.json.id, "Backdrop", imgParams)
             end if
         end if
