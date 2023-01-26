@@ -87,6 +87,22 @@ sub loadItems()
         params.append({ IncludeItemTypes: m.top.ItemType })
     end if
 
+
+    if m.top.view = "Favorites"
+        filtered = false
+        for each param in params:
+            if param = "filters"
+                filtered = true
+            end if
+        end for
+        if filtered
+            params["filters"] = params["filters"] + ",IsFavorite"
+        else
+            params.append({ Filters: "IsFavorite" })
+        end if
+        params.append({ isFavorite: true })
+    end if
+
     if m.top.ItemType = "LiveTV"
         url = "LiveTv/Channels"
         params.append({ UserId: get_setting("active_user") })

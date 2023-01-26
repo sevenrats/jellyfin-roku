@@ -9,15 +9,14 @@
         <Group>
           <RadiobuttonList id="viewMenu" itemspacing="[0,10]" vertFocusAnimationStyle="floatingFocus" opacity="0" drawFocusFeedback="false">
           </RadiobuttonList>
-          <RadiobuttonList id="sortMenu" itemspacing="[0,10]" vertFocusAnimationStyle="floatingFocus" opacity="1" numRows="8" drawFocusFeedback="false">
+          <RadiobuttonList id="layoutMenu" itemspacing="[0,10]" vertFocusAnimationStyle="floatingFocus" opacity="1" drawFocusFeedback="false">
+          </RadiobuttonList>
+          <RadiobuttonList id="sortMenu" itemspacing="[0,10]" vertFocusAnimationStyle="floatingFocus" opacity="0" numRows="8" drawFocusFeedback="false">
           </RadiobuttonList>
           <RadiobuttonList id="filterMenu" itemspacing="[0,10]" vertFocusAnimationStyle="floatingFocus" opacity="0" drawFocusFeedback="false">
           </RadiobuttonList>
         </Group>
       </LayoutGroup>
-      <ButtonGroup translation="[1250,50]">
-        <Button id="favoriteMenu" iconUri="pkg:/images/icons/favorite.png" focusedIconUri="pkg:/images/icons/favorite.png" focusBitmapUri="" focusFootprintBitmapUri="" text="Favorite" showFocusFootprint="false"></Button>
-      </ButtonGroup>
     </Group>
 
     <Animation id="fadeAnim" duration="0.5" repeat="false">
@@ -31,11 +30,12 @@
     <field id="options" type="assocarray" onChange="optionsSet" />
     <field id="selectedFavoriteItem" type="node" onChange="saveFavoriteItemSelected" />
 
-    <field id="view" type="string" />
+    <field id="view" type="string" value="Titles"/>
+    <field id="layout" type="string" />
     <field id="sortField" type="string" value="SortName" />
     <field id="sortAscending" type="boolean" value="false" />
     <field id="filter" type="string" value="All" />
-    <field id="favorite" type="string" value="Favorite" />
+    <field id="favorite" type="string" value="pooptest" />
 
   </interface>
   <script type="text/brightscript" uri="ItemGridOptions.brs" />

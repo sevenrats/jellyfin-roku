@@ -124,9 +124,11 @@ sub loadInitialItems()
         SetBackground("")
     end if
 
+    m.view = get_user_setting("display." + m.top.parentItem.Id + ".view")
+    m.layout = get_user_setting("display." + m.top.parentItem.Id + ".layout")
     m.sortField = get_user_setting("display." + m.top.parentItem.Id + ".sortField")
     m.filter = get_user_setting("display." + m.top.parentItem.Id + ".filter")
-    m.view = get_user_setting("display." + m.top.parentItem.Id + ".landing")
+
     sortAscendingStr = get_user_setting("display." + m.top.parentItem.Id + ".sortAscending")
 
     ' If user has not set a preferred view for this folder, check if they've set a default view
@@ -136,7 +138,7 @@ sub loadInitialItems()
 
     if not isValid(m.sortField) then m.sortField = "SortName"
     if not isValid(m.filter) then m.filter = "All"
-    if not isValid(m.view) then m.view = "Movies"
+    if not isValid(m.layout) then m.layout = "Movies"
 
     if sortAscendingStr = invalid or sortAscendingStr = "true"
         m.sortAscending = true
@@ -152,7 +154,7 @@ sub loadInitialItems()
         m.loadItemsTask.genreIds = m.top.parentItem.id
         m.loadItemsTask.itemId = m.top.parentItem.parentFolder
         m.loadItemsTask.studioIds = ""
-    else if m.view = "Movies" or m.options.view = "Movies"
+    else if m.layout = "Movies" or m.options.layout = "Movies"
         m.loadItemsTask.studioIds = ""
         m.loadItemsTask.genreIds = ""
     else
@@ -175,7 +177,7 @@ sub loadInitialItems()
 
     ' By default we load movies
     m.loadItemsTask.studioIds = ""
-    m.loadItemsTask.view = "Movies"
+    m.loadItemsTask.view = get_user_setting("display." + m.top.parentItem.Id + ".view")
     m.itemGrid.translation = "[96, 650]"
     m.itemGrid.itemSize = "[230, 310]"
     m.itemGrid.rowHeights = "[310]"
@@ -191,7 +193,7 @@ sub loadInitialItems()
         m.top.imageDisplayMode = "scaleToFit"
         m.selectedMovieOverview.visible = false
         m.infoGroup.visible = false
-    else if LCase(m.options.view) = "moviesgrid" or LCase(m.view) = "moviesgrid"
+    else if LCase(m.options.layout) = "moviesgrid" or LCase(m.layout) = "moviesgrid"
         m.itemGrid.translation = "[96, 60]"
         m.itemGrid.numRows = "3"
         m.selectedMovieOverview.visible = false
@@ -213,6 +215,10 @@ sub loadInitialItems()
         m.infoGroup.visible = false
     end if
 
+    if m.options.view = "Favorites"
+        m.loadItemsTask.view = "Favorites"
+    end if
+
     m.loadItemsTask.observeField("content", "ItemDataLoaded")
     m.spinner.visible = true
     m.loadItemsTask.control = "RUN"
@@ -223,19 +229,16 @@ end sub
 sub setMoviesOptions(options)
 
     options.views = [
-        { "Title": tr("Movies (Presentation)"), "Name": "Movies" },
-        { "Title": tr("Movies (Grid)"), "Name": "MoviesGrid" },
+        { "Title": tr("Movies"), "Name": "Movies" },
+        { "Title": tr("Favorites"), "Name": "Favorites" },
         { "Title": tr("Studios"), "Name": "Studios" },
         { "Title": tr("Genres"), "Name": "Genres" }
     ]
 
-    if m.top.parentItem.json.type = "Genre"
-        options.views = [
-            { "Title": tr("Movies (Presentation)"), "Name": "Movies" },
-            { "Title": tr("Movies (Grid)"), "Name": "MoviesGrid" },
-        ]
-    end if
-
+    options.layout = [
+        { "Title": tr("Grid"), "Name": "MoviesGrid" },
+        { "Title": tr("Presentation"), "Name": "Movies" }
+    ]
     options.sort = [
         { "Title": tr("TITLE"), "Name": "SortName" },
         { "Title": tr("IMDB_RATING"), "Name": "CommunityRating" },
@@ -250,7 +253,6 @@ sub setMoviesOptions(options)
 
     options.filter = [
         { "Title": tr("All"), "Name": "All" },
-        { "Title": tr("Favorites"), "Name": "Favorites" },
         { "Title": tr("Played"), "Name": "Played" },
         { "Title": tr("Unplayed"), "Name": "Unplayed" },
         { "Title": tr("Resumable"), "Name": "Resumable" }
@@ -304,6 +306,15 @@ sub SetUpOptions()
             o.Selected = true
             o.Ascending = m.sortAscending
             m.options.view = o.Name
+        end if
+    end for
+
+    ' Set selected layout option
+    for each o in options.layout
+        if o.Name = m.layout
+            o.Selected = true
+            o.Ascending = m.sortAscending
+            m.options.layout = o.Name
         end if
     end for
 
@@ -485,7 +496,7 @@ sub onItemFocused()
 
     if LCase(m.options.view) = "studios" or LCase(m.view) = "studios"
         return
-    else if LCase(m.options.view) = "moviesgrid" or LCase(m.view) = "moviesgrid"
+    else if LCase(m.options.layout) = "moviesgrid" or LCase(m.layout) = "moviesgrid"
         return
     end if
 
@@ -701,11 +712,11 @@ sub optionsClosed()
         set_user_setting("display." + m.top.parentItem.Id + ".filter", m.options.filter)
     end if
 
-    m.view = get_user_setting("display." + m.top.parentItem.Id + ".landing")
+    m.view = get_user_setting("display." + m.top.parentItem.Id + ".view")
 
     if m.options.view <> m.view
         m.view = m.options.view
-        set_user_setting("display." + m.top.parentItem.Id + ".landing", m.view)
+        set_user_setting("display." + m.top.parentItem.Id + ".view", m.view)
 
         ' Reset any filtering or search terms
         m.top.alphaSelected = ""
@@ -720,6 +731,12 @@ sub optionsClosed()
         set_user_setting("display." + m.top.parentItem.Id + ".sortAscending", "true")
         set_user_setting("display." + m.top.parentItem.Id + ".filter", m.filter)
 
+        reload = true
+    end if
+
+    if m.options.layout <> m.layout
+        m.layout = m.options.layout
+        set_user_setting("display." + m.top.parentItem.Id + ".layout", m.layout)
         reload = true
     end if
 
