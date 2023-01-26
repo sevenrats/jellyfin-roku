@@ -131,14 +131,10 @@ sub loadInitialItems()
 
     sortAscendingStr = get_user_setting("display." + m.top.parentItem.Id + ".sortAscending")
 
-    ' If user has not set a preferred view for this folder, check if they've set a default view
-    if not isValid(m.view)
-        m.view = get_user_setting("itemgrid.movieDefaultView")
-    end if
-
+    if not isValid(m.view) then m.view = "Movies"
     if not isValid(m.sortField) then m.sortField = "SortName"
     if not isValid(m.filter) then m.filter = "All"
-    if not isValid(m.layout) then m.layout = "Movies"
+    if not isValid(m.layout) then m.layout = "grid"
 
     if sortAscendingStr = invalid or sortAscendingStr = "true"
         m.sortAscending = true
@@ -154,9 +150,6 @@ sub loadInitialItems()
         m.loadItemsTask.genreIds = m.top.parentItem.id
         m.loadItemsTask.itemId = m.top.parentItem.parentFolder
         m.loadItemsTask.studioIds = ""
-    else if m.layout = "Movies" or m.options.layout = "Movies"
-        m.loadItemsTask.studioIds = ""
-        m.loadItemsTask.genreIds = ""
     else
         m.loadItemsTask.itemId = m.top.parentItem.Id
     end if
@@ -193,7 +186,7 @@ sub loadInitialItems()
         m.top.imageDisplayMode = "scaleToFit"
         m.selectedMovieOverview.visible = false
         m.infoGroup.visible = false
-    else if LCase(m.options.layout) = "moviesgrid" or LCase(m.layout) = "moviesgrid"
+    else if LCase(m.options.layout) = "grid" or LCase(m.layout) = "grid"
         m.itemGrid.translation = "[96, 60]"
         m.itemGrid.numRows = "3"
         m.selectedMovieOverview.visible = false
@@ -236,8 +229,8 @@ sub setMoviesOptions(options)
     ]
 
     options.layout = [
-        { "Title": tr("Grid"), "Name": "MoviesGrid" },
-        { "Title": tr("Presentation"), "Name": "Movies" }
+        { "Title": tr("Grid"), "Name": "grid" },
+        { "Title": tr("Presentation"), "Name": "presentation" }
     ]
     options.sort = [
         { "Title": tr("TITLE"), "Name": "SortName" },
@@ -496,7 +489,7 @@ sub onItemFocused()
 
     if LCase(m.options.view) = "studios" or LCase(m.view) = "studios"
         return
-    else if LCase(m.options.layout) = "moviesgrid" or LCase(m.layout) = "moviesgrid"
+    else if m.options.layout = "grid" or m.layout = "grid"
         return
     end if
 
