@@ -35,7 +35,7 @@
     <field id="sortField" type="string" value="SortName" />
     <field id="sortAscending" type="boolean" value="false" />
     <field id="filter" type="string" value="All" />
-    <field id="favorite" type="string" value="pooptest" />
+    <field id="favorite" type="string" value="Favorite" />
 
   </interface>
   <script type="text/brightscript" uri="ItemGridOptions.brs" />
