@@ -120,14 +120,17 @@ sub loadInitialItems()
         SetBackground("")
     end if
 
+    m.view = get_user_setting("display." + m.top.parentItem.Id + ".view")
+    m.layout = get_user_setting("display." + m.top.parentItem.Id + ".layout")
     m.sortField = get_user_setting("display." + m.top.parentItem.Id + ".sortField")
-    sortAscendingStr = get_user_setting("display." + m.top.parentItem.Id + ".sortAscending")
     m.filter = get_user_setting("display." + m.top.parentItem.Id + ".filter")
-    m.view = get_user_setting("display." + m.top.parentItem.Id + ".landing")
 
+    sortAscendingStr = get_user_setting("display." + m.top.parentItem.Id + ".sortAscending")
+
+    if not isValid(m.view) then m.view = "artists"
+    if not isValid(m.layout) then m.layout = "grid"
     if not isValid(m.sortField) then m.sortField = "SortName"
     if not isValid(m.filter) then m.filter = "All"
-    if not isValid(m.view) then m.view = "ArtistsPresentation"
 
     if sortAscendingStr = invalid or LCase(sortAscendingStr) = "true"
         m.sortAscending = true
@@ -141,9 +144,9 @@ sub loadInitialItems()
         m.loadItemsTask.recursive = true
         m.loadItemsTask.genreIds = m.top.parentItem.id
         m.loadItemsTask.itemId = m.top.parentItem.parentFolder
-    else if LCase(m.view) = "artistspresentation" or LCase(m.options.view) = "artistspresentation"
+    else if LCase(m.layout) = "presentation" or LCase(m.options.layout) = "presentation"
         m.loadItemsTask.genreIds = ""
-    else if LCase(m.view) = "artistsgrid" or LCase(m.options.view) = "artistsgrid"
+    else if LCase(m.layout) = "grid" or LCase(m.options.layout) = "grid"
         m.loadItemsTask.genreIds = ""
     else
         m.loadItemsTask.itemId = m.top.parentItem.Id
@@ -164,7 +167,7 @@ sub loadInitialItems()
     end if
 
     ' By default we load Artists
-    m.loadItemsTask.view = "Artists"
+    m.loadItemsTask.view = get_user_setting("display." + m.top.parentItem.Id + ".view")
     m.itemGrid.translation = "[96, 420]"
     m.itemGrid.numRows = "3"
 
@@ -173,7 +176,7 @@ sub loadInitialItems()
         m.itemGrid.numRows = "4"
         m.loadItemsTask.itemType = "MusicAlbum"
         m.top.imageDisplayMode = "scaleToFit"
-    else if LCase(m.options.view) = "artistsgrid" or LCase(m.view) = "artistsgrid"
+    else if LCase(m.options.layout) = "grid" or LCase(m.layout) = "grid"
         m.itemGrid.translation = "[96, 60]"
         m.itemGrid.numRows = "4"
     else if LCase(m.options.view) = "genres" or LCase(m.view) = "genres"
@@ -201,10 +204,14 @@ end sub
 sub setMusicOptions(options)
 
     options.views = [
-        { "Title": tr("Artists (Presentation)"), "Name": "ArtistsPresentation" },
-        { "Title": tr("Artists (Grid)"), "Name": "ArtistsGrid" },
-        { "Title": tr("Albums"), "Name": "Albums" },
-        { "Title": tr("Genres"), "Name": "Genres" }
+        { "Title": tr("Artists"), "Name": "artists" },
+        { "Title": tr("Albums"), "Name": "albums" },
+        { "Title": tr("Genres"), "Name": "genres" }
+    ]
+
+    options.layout = [
+        { "Title": tr("Grid"), "Name": "grid" },
+        { "Title": tr("Presentation"), "Name": "presentation" }
     ]
 
     if LCase(m.top.parentItem.json.type) = "musicgenre"
@@ -236,6 +243,9 @@ sub setMusicOptions(options)
         options.sort = [
             { "Title": tr("TITLE"), "Name": "SortName" },
             { "Title": tr("DATE_ADDED"), "Name": "DateCreated" },
+        ]
+        options.layout = [
+            { "Title": tr("Grid"), "Name": "grid" }
         ]
     end if
 end sub
@@ -271,6 +281,15 @@ sub SetUpOptions()
             o.Selected = true
             o.Ascending = m.sortAscending
             m.options.view = o.Name
+        end if
+    end for
+
+    ' Set selected layout option
+    for each o in options.layout
+        if o.Name = m.layout
+            o.Selected = true
+            o.Ascending = m.sortAscending
+            m.options.layout = o.Name
         end if
     end for
 
@@ -438,11 +457,7 @@ sub onItemFocused()
 
     m.selectedFavoriteItem = getItemFocused()
 
-    if LCase(m.options.view) = "albums" or LCase(m.view) = "albums" or LCase(m.top.parentItem.json.type) = "musicgenre"
-        return
-    end if
-
-    if LCase(m.options.view) = "artistsgrid" or LCase(m.view) = "artistsgrid"
+    if LCase(m.options.layout) = "grid" or LCase(m.view) = "grid"
         return
     end if
 
@@ -463,13 +478,13 @@ sub onItemFocused()
     if isValid(itemData.SongCount)
         SetSongCount(itemData.SongCount)
     else
-        SetSongCount("")
+        SetSongCount(0)
     end if
 
     if isValid(itemData.AlbumCount)
         SetAlbumCount(itemData.AlbumCount)
     else
-        SetAlbumCount("")
+        SetAlbumCount(0)
     end if
 
     if isValid(itemData.Genres)
@@ -637,12 +652,12 @@ sub optionsClosed()
         set_user_setting("display." + m.top.parentItem.Id + ".filter", m.options.filter)
     end if
 
-    m.view = get_user_setting("display." + m.top.parentItem.Id + ".landing")
+    m.view = get_user_setting("display." + m.top.parentItem.Id + ".view")
 
     if m.options.view <> m.view
         m.view = m.options.view
         m.top.view = m.view
-        set_user_setting("display." + m.top.parentItem.Id + ".landing", m.view)
+        set_user_setting("display." + m.top.parentItem.Id + ".view", m.view)
 
         ' Reset any filtering or search terms
         m.top.alphaSelected = ""
@@ -657,6 +672,12 @@ sub optionsClosed()
         set_user_setting("display." + m.top.parentItem.Id + ".sortAscending", "true")
         set_user_setting("display." + m.top.parentItem.Id + ".filter", m.filter)
 
+        reload = true
+    end if
+
+    if m.options.layout <> m.layout
+        m.layout = m.options.layout
+        set_user_setting("display." + m.top.parentItem.Id + ".layout", m.layout)
         reload = true
     end if
 
