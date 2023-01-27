@@ -40,8 +40,8 @@ sub setPoster()
     else
 
         if isValid(m.top.json.ImageTags.Primary)
-            imgParams = { "maxHeight": 440, "maxWidth": 295 }
             imgParams = { "maxHeight": 440, "maxWidth": 295, "Tag": m.top.json.ImageTags.Primary }
+            m.top.posterURL = ImageURL(m.top.json.id, "Primary", imgParams)
         else if isValid(m.top.json.BackdropImageTags)
             imgParams = { "maxHeight": 440, "Tag": m.top.json.BackdropImageTags[0] }
             m.top.posterURL = ImageURL(m.top.json.id, "Backdrop", imgParams)
