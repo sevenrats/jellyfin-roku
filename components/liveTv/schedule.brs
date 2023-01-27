@@ -300,6 +300,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
     else if key = "back" and m.top.lastFocus <> invalid
         m.LoadChannelsTask.control = "stop"
         m.global.sceneManager.callFunc("popScene")
+        print "back pressedto pop mini guide"
         return true
     end if
 
