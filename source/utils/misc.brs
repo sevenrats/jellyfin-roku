@@ -310,7 +310,7 @@ sub playbackErrorDialog(node)
     m.scene.dialog = dialog
     port = CreateObject("roMessagePort")
     dialog.observeField("buttonSelected", port)
-    msg = wait(0, port)
+    wait(0, port)
     dialog.close = true
     m.spinner.visible = false
     node.control = "stop"
