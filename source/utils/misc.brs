@@ -293,7 +293,6 @@ sub startLoadingSpinner()
 end sub
 
 sub stopLoadingSpinner()
-    print "STOPLOADINGSPINNER"
     if isValid(m.spinner)
         m.spinner.visible = false
     end if
@@ -303,7 +302,6 @@ sub stopLoadingSpinner()
 end sub
 
 sub playbackErrorDialog(node)
-    print "playbackErrorDialog"
     dialog = createObject("roSGNode", "Dialog")
     dialog.title = tr("Error During Playback")
     dialog.buttons = [tr("OK")]
@@ -314,8 +312,6 @@ sub playbackErrorDialog(node)
     dialog.observeField("buttonSelected", port)
     msg = wait(0, port)
     dialog.close = true
-    print msg.getRoSGNode()
-    print "DOING THAT ONE THING"
     m.spinner.visible = false
     node.control = "stop"
     node.backPressed = true

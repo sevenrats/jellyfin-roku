@@ -494,12 +494,9 @@ sub Main (args as dynamic) as void
                 m.global.sceneManager.callFunc("deleteSceneAtIndex", 2)
             else if node.state = "finished"
                 if node.errorMsg <> ""
-                    print "THIS IS THE PLAYBACK ERROR DIALOG"
                     'stopLoadingSpinner()
                     playbackErrorDialog(node)
                 end if
-                print "THE STATE IS FINISHED"
-                print node
                 node.backPressed = true
 
                 ' If node allows retrying using Transcode Url, give that shot
