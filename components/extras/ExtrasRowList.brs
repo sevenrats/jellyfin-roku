@@ -67,9 +67,6 @@ sub onAdditionalPartsLoaded()
 end sub
 
 sub onPeopleLoaded()
-    print "People Loaded."
-    print "HERE IS M.scene"
-    print m.top.getScene()
     people = m.LoadPeopleTask.content
     m.loadPeopleTask.unobserveField("content")
     if people <> invalid and people.count() > 0

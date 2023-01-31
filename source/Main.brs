@@ -171,7 +171,6 @@ sub Main (args as dynamic) as void
                     group = CreateSeasonDetailsGroupByID(selectedItem.json.SeriesId, selectedItem.id)
                 else if selectedItem.type = "Movie"
                     ' open movie detail page
-                    print "THE MOVIE"
                     print selectedItem
                     if not isValid(selectedItem.disabledForPlayback) or not selectedItem.disabledForPlayback
                         group = CreateMovieDetailsGroup(selectedItem)
