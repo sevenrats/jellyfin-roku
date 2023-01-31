@@ -67,6 +67,9 @@ sub onAdditionalPartsLoaded()
 end sub
 
 sub onPeopleLoaded()
+    print "People Loaded."
+    print "HERE IS M.scene"
+    print m.top.getScene()
     people = m.LoadPeopleTask.content
     m.loadPeopleTask.unobserveField("content")
     if people <> invalid and people.count() > 0
@@ -79,6 +82,7 @@ sub onPeopleLoaded()
                 person.subTitle = person.json.Type
             end if
             person.Type = "Person"
+            'person.disabledForPlayback = true
             row.appendChild(person)
         end for
     end if
@@ -103,6 +107,7 @@ sub onLikeThisLoaded()
                 item.subTitle = stri(premierYear.GetYear())
             end if
             item.Type = item.json.Type
+            item.disabledForPlayback = true
             row.appendChild(item)
         end for
         addRowSize([234, 396])
@@ -125,6 +130,7 @@ function onSpecialFeaturesLoaded()
             item.subTitle = ""
             item.Type = item.json.Type
             item.imageWidth = 450
+            item.disabledForPlayback = True
             row.appendChild(item)
         end for
         addRowSize([462, 372])
@@ -145,6 +151,7 @@ sub onMoviesLoaded()
             mov.labelText = mov.json.Name
             mov.subTitle = mov.json.ProductionYear
             mov.Type = mov.json.Type
+            mov.disabledForPlayback = true
             row.appendChild(mov)
         end for
         m.top.rowItemSize = [[234, 396]]
@@ -160,6 +167,9 @@ sub onShowsLoaded()
     m.LoadShowsTask.unobserveField("content")
     if data <> invalid and data.count() > 0
         row = buildRow("TV Shows", data, 502)
+        for each tvshow in row
+            tvshow.disabledForPlayback = true
+        end for
         addRowSize([502, 396])
         m.top.content.appendChild(row)
     end if
@@ -172,9 +182,13 @@ sub onSeriesLoaded()
     data = m.LoadSeriesTask.content
     m.LoadSeriesTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = buildRow("Series", data)
-        addRowSize([234, 396])
-        m.top.content.appendChild(row)
+        for each series in data
+            series.disabledForPlayback = true
+            end
+            row = buildRow("Series", data)
+            addRowSize([234, 396])
+            m.top.content.appendChild(row)
+        end for
     end if
     m.top.visible = true
 end sub
@@ -207,4 +221,6 @@ end sub
 
 sub onRowItemSelected()
     m.top.selectedItem = m.top.content.getChild(m.top.rowItemSelected[0]).getChild(m.top.rowItemSelected[1])
+    print "SELECTED ITEM"
+    print m.top.selectedItem
 end sub
