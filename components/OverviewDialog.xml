@@ -6,10 +6,6 @@
   </interface>
   <script type="text/brightscript">
   <![CDATA[
-  function init()
-    m.top.observeFieldScoped("buttonSelected", "closeDialog")
-  end function
-
   sub setTitle()
       m.top.findNode("titleArea").primaryTitle = m.top.title
   end sub
@@ -18,14 +14,10 @@
       m.top.findNode("description").text = m.top.overview
   end sub
 
-  sub closeDialog()
-    m.top.close = true
-  end sub
-
   function onKeyEvent(key as string, press as boolean) as boolean
       if press = false then return false
 
-      if key = "OK" and m.top.findNode("contentArea").isInFocusChain()
+      if key = "OK"
           m.top.close = true
       end if
 
