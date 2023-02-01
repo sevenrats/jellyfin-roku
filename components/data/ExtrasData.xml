@@ -22,5 +22,6 @@
     <field id="posterUrl" type="string" />
     <field id="imageWidth" type="integer" value="234" />
     <field id="json" type="assocarray" />
+    <field id="showDuringPlayback" type="boolean" value="false" />
   </interface>
 </component>

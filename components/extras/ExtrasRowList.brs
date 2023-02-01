@@ -79,6 +79,7 @@ sub onPeopleLoaded()
                 person.subTitle = person.json.Type
             end if
             person.Type = "Person"
+            person.showDuringPlayback = true
             row.appendChild(person)
         end for
     end if
