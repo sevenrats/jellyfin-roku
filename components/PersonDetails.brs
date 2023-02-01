@@ -70,11 +70,9 @@ end sub
 sub onButtonGroupEscaped()
     key = m.btnGrp.escape
     if key = "down"
-        m.vidsList.setFocus(true)
-        m.top.findNode("VertSlider").reverse = false
-        m.top.findNode("pplAnime").control = "start"
-    else if key = "up" and m.dscr.isTextEllipsized
-        dscrShowFocus()
+        m.dscr.setFocus(true)
+        m.dscr.opacity = 1.0
+        m.top.findNode("dscrBorder").color = "#d0d0d0ff"
     end if
 end sub
 
@@ -82,7 +80,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
 
     if key = "OK"
-        if m.dscr.hasFocus() and m.dscr.isTextEllipsized
+        if m.dscr.hasFocus()
             createFullDscrDlg()
             return true
         end if
@@ -96,16 +94,25 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
     if key = "down"
         if m.dscr.hasFocus()
+            m.dscr.opacity = 0.6
+            m.top.findNode("dscrBorder").color = "#data202020ff"
+            m.vidsList.setFocus(true)
+            m.top.findNode("VertSlider").reverse = false
+            m.top.findNode("pplAnime").control = "start"
+            return true
+        end if
+    else if key = "up"
+        if m.dscr.hasFocus()
             m.favBtn.setFocus(true)
             m.dscr.opacity = 0.6
             m.top.findNode("dscrBorder").color = "#data202020ff"
             return true
-        end if
-    else if key = "up"
-        if m.vidsList.isInFocusChain() and m.vidsList.itemFocused = 0
+        else if m.vidsList.isInFocusChain() and m.vidsList.itemFocused = 0
             m.top.findNode("VertSlider").reverse = true
             m.top.findNode("pplAnime").control = "start"
-            m.favBtn.setFocus(true)
+            m.dscr.setFocus(true)
+            m.dscr.opacity = 1.0
+            m.top.findNode("dscrBorder").color = "#d0d0d0ff"
             return true
         end if
     end if
@@ -128,10 +135,10 @@ end sub
 
 sub createFullDscrDlg()
     dlg = CreateObject("roSGNode", "OverviewDialog")
-    dlg.Title = tr("Press 'OK' to Close")
+    dlg.Title = m.top.itemContent.json.Name
     dlg.width = 1290
     dlg.palette = m.dlgPalette
-    dlg.overview = [m.dscr.text]
+    dlg.overview = m.dscr.text
     m.fullDscrDlg = dlg
     m.top.getScene().dialog = dlg
     border = createObject("roSGNode", "Poster")
@@ -141,6 +148,7 @@ sub createFullDscrDlg()
     border.height = dlg.height + 6
     border.translation = [dlg.translation[0] - 3, dlg.translation[1] - 3]
     border.visible = true
+
 end sub
 
 sub createDialogPallete()
