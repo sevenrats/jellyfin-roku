@@ -194,11 +194,10 @@ sub onState(msg)
                 setupButtons()
             end if
         end if
-
+        'check if video is Live TV Channel
         if m.top.content.live = true
             m.buttonGrp.removeChild(m.top.findNode("cast"))
             m.buttonGrp.removeChild(m.top.findNode("cc"))
-
             setupButtons()
         end if
 
@@ -309,7 +308,6 @@ sub dialogClosed(msg)
     sourceNode = msg.getRoSGNode()
     sourceNode.unobserveField("buttonSelected")
     sourceNode.close = true
-    m.buttonGrp.visible = true
     '
     ' if paused and diloge closed then play video
     if m.top.control = "pause"
@@ -373,7 +371,7 @@ sub showTVGuide()
     m.top.setFocus(false)
     m.buttonGrp.visible = false
     m.showGuideAnimation.control = "start"
-
+    print "Guide should have focus.... "
 end sub
 
 sub onChannelSelected(msg)
@@ -397,9 +395,14 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
     if key = "back" and m.tvGuide?.visible = true
-        m.top.removeChild(m.tvGuide)
+        'm.top.removeChild(m.tvGuide)
         m.tvGuide.setFocus(false)
+        m.tvGuide.lastFocus = "videoPlayer"
+        m.tvGuide.visible = false
+        m.buttonGrp.setFocus(false)
+        m.buttonGrp.visible = false
         m.top.setFocus(true)
+        print "m.top should have focus...."
         return true
     end if
 
@@ -424,10 +427,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m.top.findNode("VertSlider").reverse = true
         m.top.findNode("extrasFader").reverse = true
         m.top.findNode("pplAnime").control = "start"
-        m.buttonGrp.setFocus(true)
+        m.top.setFocus(true)
         m.top.control = "resume"
         m.extrasGrp.opacity = 0
-
     end if
 
     if m.buttonGrp.visible = true
