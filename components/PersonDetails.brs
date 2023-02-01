@@ -47,7 +47,6 @@ sub loadPerson()
     else
         m.top.findnode("personImage").uri = "pkg:/images/baseline_person_white_48dp.png"
     end if
-    ' if a video is not playing
     if not somethingIsPlaying()
         m.vidsList.callFunc("loadPersonVideos", m.top.Id)
         m.extrasGrp.opacity = 1.0
