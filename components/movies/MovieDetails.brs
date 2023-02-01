@@ -134,6 +134,7 @@ sub itemContentChanged()
     setWatchedColor()
     SetUpVideoOptions(itemData.mediaSources)
     SetUpAudioOptions(itemData.mediaStreams)
+    m.buttonGrp.visible = true
 end sub
 
 
