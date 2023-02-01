@@ -281,3 +281,40 @@ function findNodeBySubtype(node, subtype)
 
     return foundNodes
 end function
+
+sub startLoadingSpinner()
+    m.spinner = createObject("roSGNode", "Spinner")
+    m.spinner.translation = "[900, 450]"
+    m.scene.appendChild(m.spinner)
+    dialog = createObject("roSGNode", "ProgressDialog")
+    dialog.id = "invisibiledialog"
+    dialog.visible = false
+    m.scene.dialog = dialog
+end sub
+
+sub stopLoadingSpinner()
+    if isValid(m.spinner)
+        m.spinner.visible = false
+    end if
+    if isValid(m.scene.dialog)
+        m.scene.dialog.close = true
+    end if
+end sub
+
+sub playbackErrorDialog(node)
+    dialog = createObject("roSGNode", "Dialog")
+    dialog.title = tr("Error During Playback")
+    dialog.buttons = [tr("OK")]
+    dialog.message = tr("An error was encountered while playing this item.")
+    dialog.visible = true
+    m.scene.dialog = dialog
+    port = CreateObject("roMessagePort")
+    dialog.observeField("buttonSelected", port)
+    wait(0, port)
+    dialog.close = true
+    m.spinner.visible = false
+    node.control = "stop"
+    node.backPressed = true
+    'm.global.SceneManager.callFunc("popscene")
+end sub
+
