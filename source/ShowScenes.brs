@@ -522,7 +522,6 @@ function CreateVideoPlayerGroup(video_id, mediaSourceId = invalid, audio_stream_
     video.observeField("selectSubtitlePressed", m.port)
     video.observeField("selectPlaybackInfoPressed", m.port)
     video.observeField("state", m.port)
-
     return video
 end function
 

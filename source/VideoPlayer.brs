@@ -2,6 +2,7 @@ function VideoPlayer(id, mediaSourceId = invalid, audio_stream_idx = 1, subtitle
     ' Get video controls and UI
     video = CreateObject("roSGNode", "JFVideo")
     video.id = id
+    startLoadingSpinner()
     AddVideoContent(video, mediaSourceId, audio_stream_idx, subtitle_idx, -1, forceTranscoding, showIntro, allowResumeDialog)
 
     if video.errorMsg = "introaborted"
@@ -16,6 +17,7 @@ function VideoPlayer(id, mediaSourceId = invalid, audio_stream_idx = 1, subtitle
     video.retrievingBar.filledBarBlendColor = jellyfin_blue
     video.bufferingBar.filledBarBlendColor = jellyfin_blue
     video.trickPlayBar.filledBarBlendColor = jellyfin_blue
+    stopLoadingSpinner()
     return video
 end function
 
@@ -46,11 +48,13 @@ sub AddVideoContent(video, mediaSourceId, audio_stream_idx = 1, subtitle_idx = -
     end if
 
     if m.videotype = "Episode" or m.videotype = "Series"
+
         if isValid(meta.json.RunTimeTicks)
             video.runTime = (meta.json.RunTimeTicks / 10000000.0)
         else
             video.runTime = invalid
         end if
+        
         video.content.contenttype = "episode"
     end if
 
@@ -61,7 +65,9 @@ sub AddVideoContent(video, mediaSourceId, audio_stream_idx = 1, subtitle_idx = -
         playbackPosition = meta.json.UserData.PlaybackPositionTicks
         if allowResumeDialog
             if playbackPosition > 0
+                stopLoadingSpinner()
                 dialogResult = startPlayBackOver(playbackPosition)
+                startLoadingSpinner()
                 'Dialog returns -1 when back pressed, 0 for resume, and 1 for start over
                 if dialogResult = -1
                     'User pressed back, return invalid and don't load video

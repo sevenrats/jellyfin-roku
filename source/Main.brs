@@ -493,7 +493,10 @@ sub Main (args as dynamic) as void
                 m.global.sceneManager.callFunc("pushScene", video)
                 m.global.sceneManager.callFunc("deleteSceneAtIndex", 2)
             else if node.state = "finished"
-                node.control = "stop"
+                if node.errorMsg <> ""
+                    playbackErrorDialog(node)
+                end if
+                node.backPressed = true
 
                 ' If node allows retrying using Transcode Url, give that shot
                 if isValid(node.retryWithTranscoding) and node.retryWithTranscoding
