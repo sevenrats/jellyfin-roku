@@ -6,7 +6,7 @@ sub init()
     m.favBtn = m.top.findNode("favorite-button")
     m.extrasGrp = m.top.findNode("extrasGrp")
     m.top.findNode("VertSlider").keyValue = "[[30, 998], [30, 789], [30, 580], [30,371 ], [30, 162]]"
-    m.extrasGrp.opacity = 1.0
+    m.extrasGrp.opacity = 0
     m.extrasGrp.translation = "[30, 998]"
     m.dscr.observeField("isTextEllipsized", "onEllipsisChanged")
     createDialogPallete()
@@ -47,7 +47,11 @@ sub loadPerson()
     else
         m.top.findnode("personImage").uri = "pkg:/images/baseline_person_white_48dp.png"
     end if
-    m.vidsList.callFunc("loadPersonVideos", m.top.Id)
+    ' if a video is not playing
+    if not somethingIsPlaying()
+        m.vidsList.callFunc("loadPersonVideos", m.top.Id)
+        m.extrasGrp.opacity = 1.0
+    end if
 
     setFavoriteColor()
     m.favBtn.setFocus(true)
@@ -69,7 +73,7 @@ end sub
 
 sub onButtonGroupEscaped()
     key = m.btnGrp.escape
-    if key = "down"
+    if key = "down" and not somethingIsPlaying()
         m.vidsList.setFocus(true)
         m.top.findNode("VertSlider").reverse = false
         m.top.findNode("pplAnime").control = "start"
@@ -163,4 +167,8 @@ function shortDate(isoDate) as string
     myDate = CreateObject("roDateTime")
     myDate.FromISO8601String(isoDate)
     return myDate.AsDateString("short-month-no-weekday")
+end function
+
+function somethingIsPlaying()
+    return m.global.playstatetask.status = "update"
 end function
