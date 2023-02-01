@@ -494,7 +494,6 @@ sub Main (args as dynamic) as void
                 m.global.sceneManager.callFunc("deleteSceneAtIndex", 2)
             else if node.state = "finished"
                 if node.errorMsg <> ""
-                    'stopLoadingSpinner()
                     playbackErrorDialog(node)
                 end if
                 node.backPressed = true
@@ -511,9 +510,6 @@ sub Main (args as dynamic) as void
                 else
                     autoPlayNextEpisode(node.id, node.showID)
                 end if
-            else
-                print "LANDED IN THE TRASH"
-                print node.state
             end if
         else if type(msg) = "roDeviceInfoEvent"
             event = msg.GetInfo()
