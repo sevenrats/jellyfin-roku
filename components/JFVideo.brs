@@ -40,7 +40,6 @@ sub init()
     m.extrasGrp.opacity = 0
 
     m.showGuideAnimation = m.top.findNode("showGuide")
-    m.guideIntialLoad = false
 end sub
 
 '
@@ -316,6 +315,7 @@ sub dialogClosed(msg)
     if m.top.control = "pause"
         m.top.control = "resume"
     end if
+    m.top.setFocus(true)
 end sub
 
 sub Subtitles()
@@ -337,8 +337,8 @@ sub onButtonGroupEscaped()
     if key = "up"
         m.buttonGrp.setFocus(false)
         m.buttonGrp.visible = false
-        m.top.setFocus(true)
     end if
+    m.top.setFocus(true)
 end sub
 
 ' Setup playback buttons, default to Play button selected
@@ -360,18 +360,17 @@ sub onButtonSelectedChange()
 end sub
 
 sub showTVGuide()
-    if m.guideIntialLoad = false
-        m.tvGuide = createObject("roSGNode", "Schedule")
-        m.tvGuide.removeChild(m.tvGuide.findNode("rec"))
-        m.tvGuide.removeChild(m.tvGuide.findNode("detailsPane"))
-        m.tvGuide.observeField("watchChannel", "onChannelSelected")
-        m.tvGuide.visible = true
-        m.tvGuide.setFocus(true)
-        m.tvGuide.translation = "[0, 200]"
-        m.tvGuide.lastFocus = "videoPlayer"
-    end if
+    m.tvGuide = createObject("roSGNode", "Schedule")
+    m.tvGuide.removeChild(m.tvGuide.findNode("rec"))
+    m.tvGuide.removeChild(m.tvGuide.findNode("detailsPane"))
+    m.tvGuide.observeField("watchChannel", "onChannelSelected")
+    m.tvGuide.visible = true
+    m.tvGuide.setFocus(true)
+    m.tvGuide.translation = "[0, 200]"
+    m.tvGuide.lastFocus = "videoPlayer"
     m.top.appendChild(m.tvGuide)
     m.buttonGrp.setFocus(false)
+    m.top.setFocus(false)
     m.buttonGrp.visible = false
     m.showGuideAnimation.control = "start"
 
@@ -382,10 +381,12 @@ sub onChannelSelected(msg)
     m.top.lastFocus = lastFocusedChild(node)
     if node.watchChannel <> invalid
         m.top.selectedItem = node.watchChannel.id
-        m.global.sceneManager.callfunc("clearPreviousScene")
         m.top.control = "stop"
-
+        m.global.sceneManager.callfunc("clearPreviousScene")
     end if
+    'remove guide from view while new channel is loading
+    m.top.removeChild(m.tvGuide)
+    m.tvGuide.setFocus(false)
 end sub
 
 
@@ -411,7 +412,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m.nextEpisodeButton.setFocus(false)
         m.top.setFocus(true)
     end if
-    if key = "down" and m.top.hasFocus()
+    if key = "down" and m.top.hasFocus() and m.top.state = "playing"
         setinfo()
         m.buttonGrp.setFocus(true)
         m.buttonGrp.visible = true
@@ -439,7 +440,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 selectedButton.selected = not selectedButton.selected
                 if selectedButton.id = "guide"
                     showTVGuide()
-                    m.guideIntialLoad = true
                     return true
                 end if
                 if selectedButton.id = "cc"

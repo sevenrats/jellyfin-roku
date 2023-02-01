@@ -95,7 +95,6 @@ sub onChannelsLoaded()
             m.EPGLaunchCompleteSignaled = true
         end if
         m.LoadChannelsTask.channels = []
-
     end if
 end sub
 
@@ -288,7 +287,6 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
-
     detailsGrp = m.top.findNode("detailsPane")
     gridGrp = m.top.findNode("scheduleGrid")
 
