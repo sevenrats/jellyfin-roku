@@ -3,7 +3,7 @@
   <children>
     <Rectangle id="extrasGrp" color="#0A0010" opacity="0.3" width="1860" height="900" translation="[30, 1014]" >
       <ExtrasRowList id="extrasGrid"
-        itemSpacing="[ 60, 132]"
+        itemSpacing="[ 60, 100]"
         rowLabelOffset="[ [9, 24] ]"
         numRows="2"
         showRowLabel="true"
@@ -15,7 +15,7 @@
         <Vector2DFieldInterpolator
             id="VertSlider"
             key="[0.0, 0.25, 0.50, 75.0, 1.0]"
-            keyValue="[[30, 1014], [30, 804], [30, 588], [30,375 ], [30, 162]]"
+            keyValue="[[30, 1014], [30, 900], [30, 786], [30,672], [30, 518]]"
             fieldToInterp="extrasGrp.translation" />
         <FloatFieldInterpolator
             id="extrasFader"

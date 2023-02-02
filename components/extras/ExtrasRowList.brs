@@ -31,9 +31,26 @@ sub updateSize()
     m.top.rowItemSpacing = [36, 36]
 end sub
 
-sub loadParts(data as object)
+sub loadParts(data as object, playback = false)
+    m.top.content = CreateObject("roSGNode", "ContentNode") ' The row Node
     m.top.parentId = data.id
     m.people = data.People
+    m.LoadPeopleTask.peopleList = m.people
+    m.LoadPeopleTask.control = "RUN"
+    if not playback
+        m.LoadAdditionalPartsTask.itemId = m.top.parentId
+        m.LoadAdditionalPartsTask.control = "RUN"
+        m.LikeThisTask.itemId = m.top.parentId
+        m.LikeThisTask.control = "RUN"
+        m.SpecialFeaturesTask.itemId = m.top.parentId
+        m.SpecialFeaturesTask.control = "RUN"
+        m.LoadShowsTask.itemId = m.personId
+        m.LoadShowsTask.observeField("content", "onShowsLoaded")
+        m.LoadShowsTask.control = "RUN"
+        m.LoadSeriesTask.itemId = m.personId
+        m.LoadSeriesTask.observeField("content", "onSeriesLoaded")
+        m.LoadSeriesTask.control = "RUN"
+    end if
     m.LoadAdditionalPartsTask.itemId = m.top.parentId
     m.LoadAdditionalPartsTask.control = "RUN"
 end sub
@@ -49,8 +66,6 @@ sub onAdditionalPartsLoaded()
     parts = m.LoadAdditionalPartsTask.content
     m.LoadAdditionalPartsTask.unobserveField("content")
 
-    data = CreateObject("roSGNode", "ContentNode") ' The row Node
-    m.top.content = data
     if parts <> invalid and parts.count() > 0
         row = buildRow("Additional Parts", parts, 464)
         addRowSize([464, 291])
@@ -61,9 +76,7 @@ sub onAdditionalPartsLoaded()
     end if
     m.top.translation = "[75,10]"
 
-    ' Load Cast and Crew and everything else...
-    m.LoadPeopleTask.peopleList = m.people
-    m.LoadPeopleTask.control = "RUN"
+
 end sub
 
 sub onPeopleLoaded()
@@ -82,8 +95,6 @@ sub onPeopleLoaded()
             row.appendChild(person)
         end for
     end if
-    m.LikeThisTask.itemId = m.top.parentId
-    m.LikeThisTask.control = "RUN"
 end sub
 
 sub onLikeThisLoaded()
@@ -107,9 +118,6 @@ sub onLikeThisLoaded()
         end for
         addRowSize([234, 396])
     end if
-    ' Special Features next...
-    m.SpecialFeaturesTask.itemId = m.top.parentId
-    m.SpecialFeaturesTask.control = "RUN"
 end sub
 
 function onSpecialFeaturesLoaded()
@@ -150,9 +158,6 @@ sub onMoviesLoaded()
         m.top.rowItemSize = [[234, 396]]
     end if
     m.top.content = rlContent
-    m.LoadShowsTask.itemId = m.personId
-    m.LoadShowsTask.observeField("content", "onShowsLoaded")
-    m.LoadShowsTask.control = "RUN"
 end sub
 
 sub onShowsLoaded()
@@ -163,9 +168,6 @@ sub onShowsLoaded()
         addRowSize([502, 396])
         m.top.content.appendChild(row)
     end if
-    m.LoadSeriesTask.itemId = m.personId
-    m.LoadSeriesTask.observeField("content", "onSeriesLoaded")
-    m.LoadSeriesTask.control = "RUN"
 end sub
 
 sub onSeriesLoaded()
