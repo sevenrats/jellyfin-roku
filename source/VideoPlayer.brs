@@ -51,7 +51,7 @@ sub AddVideoContent(video, mediaSourceId, audio_stream_idx = 1, subtitle_idx = -
         if meta.json.RunTimeTicks <> invalid
             video.runTime = (meta.json.RunTimeTicks / 10000000.0)
         else
-            video.runTime = 0 ' fall straight through to jfvideo error condition
+            video.runTime = invalid
         end if
         video.content.contenttype = "episode"
     end if

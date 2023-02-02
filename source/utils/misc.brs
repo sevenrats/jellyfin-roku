@@ -300,21 +300,3 @@ sub stopLoadingSpinner()
         m.scene.dialog.close = true
     end if
 end sub
-
-sub playbackErrorDialog(node)
-    dialog = createObject("roSGNode", "Dialog")
-    dialog.title = tr("Error During Playback")
-    dialog.buttons = [tr("OK")]
-    dialog.message = tr("An error was encountered while playing this item.")
-    dialog.visible = true
-    m.scene.dialog = dialog
-    port = CreateObject("roMessagePort")
-    dialog.observeField("buttonSelected", port)
-    wait(0, port)
-    dialog.close = true
-    m.spinner.visible = false
-    node.control = "stop"
-    node.backPressed = true
-    'm.global.SceneManager.callFunc("popscene")
-end sub
-
