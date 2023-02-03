@@ -537,7 +537,7 @@ function CreateVideoPlayerGroup(video_id, mediaSourceId = invalid, audio_stream_
 
     extras = video.findNode("extrasGrid")
     extras.observeField("selectedItem", m.port)
-    extras.callFunc("loadParts", ItemMetaData(video_id).json)
+    extras.callFunc("loadParts", ItemMetaData(video_id).json, true)
 
     return video
 end function
