@@ -390,20 +390,23 @@ end sub
 
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    if key = "back" and m.top.control = "pause"
-        m.top.control = "resume"
-        return true
-    end if
-    if key = "back" and m.tvGuide?.visible = true
-        'm.top.removeChild(m.tvGuide)
-        m.tvGuide.setFocus(false)
-        m.tvGuide.lastFocus = "videoPlayer"
-        m.tvGuide.visible = false
-        m.buttonGrp.setFocus(false)
-        m.buttonGrp.visible = false
-        m.top.setFocus(true)
-        print "m.top should have focus...."
-        return true
+    print "JFVIDEO HEARD KEY"
+    if key = "back"
+        if m.top.control = "pause" and not m.extras.isinfocuschain()
+            m.top.control = "resume"
+            return true
+        end if
+        if m.tvGuide?.visible = true
+            m.tvGuide.setFocus(false)
+            m.tvGuide.lastFocus = "videoPlayer"
+            m.tvGuide.visible = false
+            m.buttonGrp.setFocus(false)
+            m.buttonGrp.visible = false
+            m.top.setFocus(true)
+            print m.top
+            print "m.top should have focus...."
+            return true
+        end if
     end if
 
     if key = "OK" and m.nextEpisodeButton.isinfocuschain() and m.top.trickPlayMode = "play"
@@ -422,14 +425,17 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
 
-    if (key = "down" or key = "back") and m.extras.hasFocus()
+    if press and (key = "down" or key = "back") and m.extras.hasFocus()
         m.extras.setFocus(false)
         m.top.findNode("VertSlider").reverse = true
         m.top.findNode("extrasFader").reverse = true
         m.top.findNode("pplAnime").control = "start"
         m.top.setFocus(true)
+        print "MTOP IN DOWN OR BACK"
+        print m.top
         m.top.control = "resume"
         m.extrasGrp.opacity = 0
+        return true
     end if
 
     if m.buttonGrp.visible = true
