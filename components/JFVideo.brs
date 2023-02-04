@@ -390,7 +390,6 @@ end sub
 
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    print "JFVIDEO HEARD KEY"
     if key = "back"
         if m.top.control = "pause" and not m.extras.isinfocuschain()
             m.top.control = "resume"
