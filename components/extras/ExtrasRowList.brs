@@ -51,8 +51,6 @@ sub loadParts(data as object, playback = false)
         m.LoadSeriesTask.observeField("content", "onSeriesLoaded")
         m.LoadSeriesTask.control = "RUN"
     end if
-    m.LoadAdditionalPartsTask.itemId = m.top.parentId
-    m.LoadAdditionalPartsTask.control = "RUN"
 end sub
 
 sub loadPersonVideos(personId)
@@ -70,9 +68,8 @@ sub onAdditionalPartsLoaded()
         row = buildRow("Additional Parts", parts, 464)
         addRowSize([464, 291])
         m.top.content.appendChild(row)
+        print "THIS ROW SIZE"
         m.top.rowItemSize = [[464, 291]]
-    else
-        m.top.rowItemSize = [[234, 396]]
     end if
     m.top.translation = "[75,10]"
 
@@ -80,6 +77,7 @@ sub onAdditionalPartsLoaded()
 end sub
 
 sub onPeopleLoaded()
+    m.top.rowItemSize = [[234, 396]]
     people = m.LoadPeopleTask.content
     m.loadPeopleTask.unobserveField("content")
     if people <> invalid and people.count() > 0
