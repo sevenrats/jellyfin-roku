@@ -54,6 +54,7 @@ sub AddVideoContent(video, mediaSourceId, audio_stream_idx = 1, subtitle_idx = -
     end if
 
     video.content.title = meta.title
+    video.content.description = meta.json.CurrentProgram.Overview
     video.showID = meta.showID
 
     if playbackPosition = -1 and isValid(meta.json)

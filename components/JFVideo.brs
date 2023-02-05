@@ -287,7 +287,7 @@ sub setinfo()
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
     else
-        m.info = "No Data"
+        m.info = m.top.content.description
     end if
 end sub
 
