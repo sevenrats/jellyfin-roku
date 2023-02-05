@@ -371,7 +371,6 @@ sub showTVGuide()
     m.top.setFocus(false)
     m.buttonGrp.visible = false
     m.showGuideAnimation.control = "start"
-    print "Guide should have focus.... "
 end sub
 
 sub onChannelSelected(msg)
@@ -402,8 +401,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
             m.buttonGrp.setFocus(false)
             m.buttonGrp.visible = false
             m.top.setFocus(true)
-            print m.top
-            print "m.top should have focus...."
             return true
         end if
     end if
@@ -430,8 +427,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m.top.findNode("extrasFader").reverse = true
         m.top.findNode("pplAnime").control = "start"
         m.top.setFocus(true)
-        print "MTOP IN DOWN OR BACK"
-        print m.top
         m.top.control = "resume"
         m.extrasGrp.opacity = 0
         return true
