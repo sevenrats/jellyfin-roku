@@ -3,6 +3,7 @@ sub init()
     updateSize()
     m.top.rowFocusAnimationStyle = "fixedFocus"
     m.top.observeField("rowItemSelected", "onRowItemSelected")
+    m.top.content = CreateObject("roSGNode", "ContentNode")
 
     ' Set up all Tasks
     m.LoadPeopleTask = CreateObject("roSGNode", "LoadItemsTask")
@@ -32,7 +33,6 @@ sub updateSize()
 end sub
 
 sub loadParts(data as object, playback = false)
-    m.top.content = CreateObject("roSGNode", "ContentNode") ' The row Node
     m.top.parentId = data.id
     m.people = data.People
     m.LoadPeopleTask.peopleList = m.people
@@ -44,12 +44,6 @@ sub loadParts(data as object, playback = false)
         m.LikeThisTask.control = "RUN"
         m.SpecialFeaturesTask.itemId = m.top.parentId
         m.SpecialFeaturesTask.control = "RUN"
-        m.LoadShowsTask.itemId = m.personId
-        m.LoadShowsTask.observeField("content", "onShowsLoaded")
-        m.LoadShowsTask.control = "RUN"
-        m.LoadSeriesTask.itemId = m.personId
-        m.LoadSeriesTask.observeField("content", "onSeriesLoaded")
-        m.LoadSeriesTask.control = "RUN"
     end if
 end sub
 
@@ -58,6 +52,12 @@ sub loadPersonVideos(personId)
     m.LoadMoviesTask.itemId = m.personId
     m.LoadMoviesTask.observeField("content", "onMoviesLoaded")
     m.LoadMoviesTask.control = "RUN"
+    m.LoadShowsTask.itemId = m.personId
+    m.LoadShowsTask.observeField("content", "onShowsLoaded")
+    m.LoadShowsTask.control = "RUN"
+    m.LoadSeriesTask.itemId = m.personId
+    m.LoadSeriesTask.observeField("content", "onSeriesLoaded")
+    m.LoadSeriesTask.control = "RUN"
 end sub
 
 sub onAdditionalPartsLoaded()
@@ -68,11 +68,8 @@ sub onAdditionalPartsLoaded()
         row = buildRow("Additional Parts", parts, 464)
         addRowSize([464, 291])
         m.top.content.appendChild(row)
-        print "THIS ROW SIZE"
         m.top.rowItemSize = [[464, 291]]
     end if
-    m.top.translation = "[75,10]"
-
 
 end sub
 
@@ -142,9 +139,8 @@ end function
 sub onMoviesLoaded()
     data = m.LoadMoviesTask.content
     m.LoadMoviesTask.unobserveField("content")
-    rlContent = CreateObject("roSGNode", "ContentNode")
     if data <> invalid and data.count() > 0
-        row = rlContent.createChild("ContentNode")
+        row = m.top.content.createChild("ContentNode")
         row.title = tr("Movies")
         for each mov in data
             mov.Id = mov.json.Id
@@ -155,7 +151,6 @@ sub onMoviesLoaded()
         end for
         m.top.rowItemSize = [[234, 396]]
     end if
-    m.top.content = rlContent
 end sub
 
 sub onShowsLoaded()
