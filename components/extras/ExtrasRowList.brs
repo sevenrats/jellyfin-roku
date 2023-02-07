@@ -140,15 +140,8 @@ sub onMoviesLoaded()
     data = m.LoadMoviesTask.content
     m.LoadMoviesTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = m.top.content.createChild("ContentNode")
-        row.title = tr("Movies")
-        for each mov in data
-            mov.Id = mov.json.Id
-            mov.labelText = mov.json.Name
-            mov.subTitle = mov.json.ProductionYear
-            mov.Type = mov.json.Type
-            row.appendChild(mov)
-        end for
+        row = buildRow("Movies", data)
+        m.top.content.insertChild(row, 3)
         m.top.rowItemSize = [[234, 396]]
     end if
 end sub
@@ -159,7 +152,7 @@ sub onShowsLoaded()
     if data <> invalid and data.count() > 0
         row = buildRow("TV Shows", data, 502)
         addRowSize([502, 396])
-        m.top.content.appendChild(row)
+        m.top.content.insertChild(row, 2)
     end if
 end sub
 
@@ -169,7 +162,7 @@ sub onSeriesLoaded()
     if data <> invalid and data.count() > 0
         row = buildRow("Series", data)
         addRowSize([234, 396])
-        m.top.content.appendChild(row)
+        m.top.content.insertChild(row, 1)
     end if
     m.top.visible = true
 end sub
