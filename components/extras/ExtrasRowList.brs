@@ -5,6 +5,7 @@ sub init()
     m.top.observeField("rowItemSelected", "onRowItemSelected")
     m.unsortedContent = CreateObject("roSGNode", "ContentNode")
     m.top.content = CreateObject("roSGNode", "ContentNode")
+    m.loadingComplete = false
 
     ' Set up all Tasks
     m.LoadPeopleTask = CreateObject("roSGNode", "LoadItemsTask")
@@ -79,7 +80,7 @@ sub onAdditionalPartsLoaded()
         m.unsortedContent.appendChild(row)
         m.top.rowItemSize = [[464, 291]]
     end if
-    sortIfTasksComplete()
+    sortCompletedTasks()
 end sub
 
 sub onPeopleLoaded()
@@ -100,7 +101,7 @@ sub onPeopleLoaded()
             row.appendChild(person)
         end for
     end if
-    sortIfTasksComplete()
+    sortCompletedTasks()
 end sub
 
 sub onLikeThisLoaded()
@@ -124,8 +125,8 @@ sub onLikeThisLoaded()
             row.appendChild(item)
         end for
         addRowSize([234, 396])
-        sortIfTasksComplete()
     end if
+    sortCompletedTasks()
 end sub
 
 sub onSpecialFeaturesLoaded()
@@ -146,7 +147,7 @@ sub onSpecialFeaturesLoaded()
         end for
         addRowSize([462, 372])
     end if
-    sortIfTasksComplete()
+    sortCompletedTasks()
 end sub
 
 sub onMoviesLoaded()
@@ -158,7 +159,7 @@ sub onMoviesLoaded()
         m.unsortedContent.insertChild(row, 3)
         m.top.rowItemSize = [[234, 396]]
     end if
-    sortIfTasksComplete()
+    sortCompletedTasks()
 end sub
 
 sub onShowsLoaded()
@@ -170,7 +171,7 @@ sub onShowsLoaded()
         addRowSize([502, 396])
         m.unsortedContent.insertChild(row, 2)
     end if
-    sortIfTasksComplete()
+    sortCompletedTasks()
 end sub
 
 sub onSeriesLoaded()
@@ -182,7 +183,7 @@ sub onSeriesLoaded()
         addRowSize([234, 396])
         m.unsortedContent.insertChild(row, 1)
     end if
-    sortIfTasksComplete()
+    sortCompletedTasks()
 end sub
 
 function buildRow(rowTitle as string, items, imgWdth = 0)
@@ -215,9 +216,9 @@ sub onRowItemSelected()
     m.top.selectedItem = m.top.content.getChild(m.top.rowItemSelected[0]).getChild(m.top.rowItemSelected[1])
 end sub
 
-function getRowIndex(rowTitle as string)
+function getIndex(rowTitle as string, arr)
     rowIndex = invalid
-    for i = 0 to m.unsortedContent.getChildCount() - 1
+    for i = 0 to arr.getChildCount() - 1
         tmpRow = m.unsortedContent.getChild(i)
         if tmpRow.title = rowTitle
             rowIndex = i
@@ -227,12 +228,22 @@ function getRowIndex(rowTitle as string)
     return rowIndex
 end function
 
-sub sortIfTasksComplete()
-    if m.tasksToComplete = 0
+sub sortCompletedTasks()
+    ' if the next item we are waiting for has been loaded,
+    ' process it and remove it from the items we are waiting for
+    rowIndex = getIndex(m.rowTitlesInOrder[0], m.unsortedContent) ' the index of the next item we want, invalid if item has not been completed
+    while m.unsortedContent.getChildCount() > 0 and rowIndex <> invalid
+        child = m.unsortedContent.getChild(rowIndex)
+        m.top.content.appendChild(child)
+        m.unsortedContent.removeChild(child)
+        m.rowTitlesInOrder.shift()
+        rowIndex = getIndex(m.rowTitlesInOrder[0], m.unsortedContent)
+    end while
+    if m.tasksToComplete = 0 and not m.loadingComplete 'everything loaded. if the next item in order didn't load or was invalid, show the remainders in order
         for i = 0 to m.rowTitlesInOrder.count() - 1
-            rowIndex = getRowIndex(m.rowTitlesInOrder[i])
+            rowIndex = getIndex(m.rowTitlesInOrder[i], m.unsortedContent)
             if rowIndex <> invalid then m.top.content.appendChild(m.unsortedContent.getChild(rowIndex))
         end for
-        m.top.visible = true
+        m.loadingComplete = true
     end if
 end sub
