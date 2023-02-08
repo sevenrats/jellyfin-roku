@@ -54,7 +54,7 @@ sub loadParts(data as object, playback = false)
 end sub
 
 sub loadPersonVideos(personId)
-    m.rowTitlesInOrder = ["Movies", "TV Shows", "Series"]
+    m.rowTitlesInOrder = [tr("Movies"), tr("TV Shows"), tr("Series")]
     m.rowSizes = [[234, 396], [502, 396], [234, 396]]
     m.tasksToComplete = m.rowTitlesInOrder.count()
     m.personId = personId
@@ -153,7 +153,7 @@ sub onMoviesLoaded()
     data = m.LoadMoviesTask.content
     m.LoadMoviesTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = buildRow("Movies", data)
+        row = buildRow(tr("Movies"), data)
         m.unsortedContent.insertChild(row, 3)
     end if
     sortCompletedTasks()
@@ -164,7 +164,7 @@ sub onShowsLoaded()
     data = m.LoadShowsTask.content
     m.LoadShowsTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = buildRow("TV Shows", data, 502)
+        row = buildRow(tr("TV Shows"), data, 502)
         m.unsortedContent.insertChild(row, 2)
     end if
     sortCompletedTasks()
@@ -175,7 +175,7 @@ sub onSeriesLoaded()
     data = m.LoadSeriesTask.content
     m.LoadSeriesTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = buildRow("Series", data)
+        row = buildRow(tr("Series"), data)
         m.unsortedContent.insertChild(row, 1)
     end if
     sortCompletedTasks()
