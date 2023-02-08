@@ -5,6 +5,7 @@ sub init()
     m.top.observeField("rowItemSelected", "onRowItemSelected")
     m.unsortedContent = CreateObject("roSGNode", "ContentNode")
     m.top.content = CreateObject("roSGNode", "ContentNode")
+    m.rowitemSize = []
     m.loadingComplete = false
 
     ' Set up all Tasks
@@ -35,8 +36,9 @@ sub updateSize()
 end sub
 
 sub loadParts(data as object, playback = false)
-    m.tasksToComplete = 4
     m.rowTitlesInOrder = [tr("Cast & Crew"), tr("Additional Parts"), tr("More Like This"), tr("Special Features")]
+    m.rowSizes = [[234, 396], [464, 291], [234, 396], [462, 372]]
+    m.tasksToComplete = m.rowTitlesInOrder.count()
     m.top.parentId = data.id
     m.people = data.People
     m.LoadPeopleTask.peopleList = m.people
@@ -52,8 +54,9 @@ sub loadParts(data as object, playback = false)
 end sub
 
 sub loadPersonVideos(personId)
-    m.tasksToComplete = 3
     m.rowTitlesInOrder = ["Movies", "TV Shows", "Series"]
+    m.rowSizes = [[234, 396], [502, 396], [234, 396]]
+    m.tasksToComplete = m.rowTitlesInOrder.count()
     m.personId = personId
 
     m.LoadMoviesTask.itemId = m.personId
@@ -76,16 +79,13 @@ sub onAdditionalPartsLoaded()
 
     if parts <> invalid and parts.count() > 0
         row = buildRow(tr("Additional Parts"), parts, 464)
-        addRowSize([464, 291])
         m.unsortedContent.appendChild(row)
-        m.top.rowItemSize = [[464, 291]]
     end if
     sortCompletedTasks()
 end sub
 
 sub onPeopleLoaded()
     m.tasksToComplete--
-    m.top.rowItemSize = [[234, 396]]
     people = m.LoadPeopleTask.content
     m.loadPeopleTask.unobserveField("content")
     if people <> invalid and people.count() > 0
@@ -124,7 +124,6 @@ sub onLikeThisLoaded()
             item.Type = item.json.Type
             row.appendChild(item)
         end for
-        addRowSize([234, 396])
     end if
     sortCompletedTasks()
 end sub
@@ -145,7 +144,6 @@ sub onSpecialFeaturesLoaded()
             item.imageWidth = 450
             row.appendChild(item)
         end for
-        addRowSize([462, 372])
     end if
     sortCompletedTasks()
 end sub
@@ -157,7 +155,6 @@ sub onMoviesLoaded()
     if data <> invalid and data.count() > 0
         row = buildRow("Movies", data)
         m.unsortedContent.insertChild(row, 3)
-        m.top.rowItemSize = [[234, 396]]
     end if
     sortCompletedTasks()
 end sub
@@ -168,7 +165,6 @@ sub onShowsLoaded()
     m.LoadShowsTask.unobserveField("content")
     if data <> invalid and data.count() > 0
         row = buildRow("TV Shows", data, 502)
-        addRowSize([502, 396])
         m.unsortedContent.insertChild(row, 2)
     end if
     sortCompletedTasks()
@@ -180,7 +176,6 @@ sub onSeriesLoaded()
     m.LoadSeriesTask.unobserveField("content")
     if data <> invalid and data.count() > 0
         row = buildRow("Series", data)
-        addRowSize([234, 396])
         m.unsortedContent.insertChild(row, 1)
     end if
     sortCompletedTasks()
@@ -216,7 +211,7 @@ sub onRowItemSelected()
     m.top.selectedItem = m.top.content.getChild(m.top.rowItemSelected[0]).getChild(m.top.rowItemSelected[1])
 end sub
 
-function getIndex(rowTitle as string, arr)
+function getIndex(rowTitle, arr)
     rowIndex = invalid
     for i = 0 to arr.getChildCount() - 1
         tmpRow = m.unsortedContent.getChild(i)
@@ -236,13 +231,20 @@ sub sortCompletedTasks()
         child = m.unsortedContent.getChild(rowIndex)
         m.top.content.appendChild(child)
         m.unsortedContent.removeChild(child)
+        addRowSize(m.rowSizes[0])
+        m.rowSizes.shift()
         m.rowTitlesInOrder.shift()
         rowIndex = getIndex(m.rowTitlesInOrder[0], m.unsortedContent)
     end while
-    if m.tasksToComplete = 0 and not m.loadingComplete 'everything loaded. if the next item in order didn't load or was invalid, show the remainders in order
+    if m.tasksToComplete = 0 and not m.loadingComplete
+        'everything loaded, but the next item we waited for was invalid, so load what we have
+        'this happens, for example, when there are no 'Additional Parts'
         for i = 0 to m.rowTitlesInOrder.count() - 1
             rowIndex = getIndex(m.rowTitlesInOrder[i], m.unsortedContent)
-            if rowIndex <> invalid then m.top.content.appendChild(m.unsortedContent.getChild(rowIndex))
+            if rowIndex <> invalid
+                m.top.content.appendChild(m.unsortedContent.getChild(rowIndex))
+                addRowSize(m.rowSizes[i])
+            end if
         end for
         m.loadingComplete = true
     end if
