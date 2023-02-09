@@ -297,7 +297,11 @@ sub info()
     ' If buffering has stopped Display dialog
     m.buttonGrp.visible = false
     dialog = createObject("roSGNode", "PlaybackInfoDialog")
-    dialog.message = m.info
+    if Len(m.info) > 0
+        dialog.message = m.info
+    else
+        dialog.message = "A description for this stream is not available."
+    end if
     m.top.getScene().dialog = dialog
     m.top.control = "pause"
 end sub
