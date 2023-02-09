@@ -424,15 +424,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 return true
             end if
         else
-            if m.tvGuide?.visible = true
-                m.tvGuide.setFocus(false)
-                m.tvGuide.lastFocus = "videoPlayer"
-                m.tvGuide.visible = false
-                m.buttonGrp.setFocus(false)
-                m.buttonGrp.visible = false
-                m.top.setFocus(true)
-                return true
-            else if m.top.state = "playing"
+            if m.top.state = "playing"
                 toggleButtonGrpVisible()
                 return true
             else
@@ -448,10 +440,20 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if m.extras.hasFocus()
                 closeExtrasSlider()
                 return true
+            else if isValid(m.tvGuide) and m.tvGuide.isInFocusChain()
+                m.tvGuide.setFocus(false)
+                m.tvGuide.lastFocus = "videoPlayer"
+                m.tvGuide.visible = false
+                m.buttonGrp.setFocus(false)
+                m.buttonGrp.visible = false
+                m.top.setFocus(true)
+                return true
             end if
         else
-            ' the release from pressing 'back' with a dialog open
-            if not m.buttonGrp.visible then m.top.control = "resume"
+            'm.top.setFocus(true) ' if JFVideo hears a back release, it should have focus
+            if not m.buttonGrp.visible
+                m.top.control = "resume"
+            end if
         end if
     end if
 
