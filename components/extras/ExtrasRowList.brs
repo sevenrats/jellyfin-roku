@@ -3,6 +3,10 @@ sub init()
     updateSize()
     m.top.rowFocusAnimationStyle = "fixedFocus"
     m.top.observeField("rowItemSelected", "onRowItemSelected")
+    m.unsortedContent = CreateObject("roSGNode", "ContentNode")
+    m.top.content = CreateObject("roSGNode", "ContentNode")
+    m.rowitemSize = []
+    m.loadingComplete = false
 
     ' Set up all Tasks
     m.LoadPeopleTask = CreateObject("roSGNode", "LoadItemsTask")
@@ -32,7 +36,9 @@ sub updateSize()
 end sub
 
 sub loadParts(data as object, playback = false)
-    m.top.content = CreateObject("roSGNode", "ContentNode") ' The row Node
+    m.rowTitlesInOrder = [tr("Cast & Crew"), tr("Additional Parts"), tr("More Like This"), tr("Special Features")]
+    m.rowSizes = [[234, 396], [464, 291], [234, 396], [462, 372]]
+    m.tasksToComplete = m.rowTitlesInOrder.count()
     m.top.parentId = data.id
     m.people = data.People
     m.LoadPeopleTask.peopleList = m.people
@@ -44,44 +50,46 @@ sub loadParts(data as object, playback = false)
         m.LikeThisTask.control = "RUN"
         m.SpecialFeaturesTask.itemId = m.top.parentId
         m.SpecialFeaturesTask.control = "RUN"
-        m.LoadShowsTask.itemId = m.personId
-        m.LoadShowsTask.observeField("content", "onShowsLoaded")
-        m.LoadShowsTask.control = "RUN"
-        m.LoadSeriesTask.itemId = m.personId
-        m.LoadSeriesTask.observeField("content", "onSeriesLoaded")
-        m.LoadSeriesTask.control = "RUN"
     end if
 end sub
 
 sub loadPersonVideos(personId)
+    m.rowTitlesInOrder = [tr("Movies"), tr("TV Shows"), tr("Series")]
+    m.rowSizes = [[234, 396], [502, 396], [234, 396]]
+    m.tasksToComplete = m.rowTitlesInOrder.count()
     m.personId = personId
+
     m.LoadMoviesTask.itemId = m.personId
     m.LoadMoviesTask.observeField("content", "onMoviesLoaded")
     m.LoadMoviesTask.control = "RUN"
+
+    m.LoadShowsTask.itemId = m.personId
+    m.LoadShowsTask.observeField("content", "onShowsLoaded")
+    m.LoadShowsTask.control = "RUN"
+
+    m.LoadSeriesTask.itemId = m.personId
+    m.LoadSeriesTask.observeField("content", "onSeriesLoaded")
+    m.LoadSeriesTask.control = "RUN"
 end sub
 
 sub onAdditionalPartsLoaded()
+    m.tasksToComplete--
     parts = m.LoadAdditionalPartsTask.content
     m.LoadAdditionalPartsTask.unobserveField("content")
 
     if parts <> invalid and parts.count() > 0
-        row = buildRow("Additional Parts", parts, 464)
-        addRowSize([464, 291])
-        m.top.content.appendChild(row)
-        print "THIS ROW SIZE"
-        m.top.rowItemSize = [[464, 291]]
+        row = buildRow(tr("Additional Parts"), parts, 464)
+        m.unsortedContent.appendChild(row)
     end if
-    m.top.translation = "[75,10]"
-
-
+    sortCompletedTasks()
 end sub
 
 sub onPeopleLoaded()
-    m.top.rowItemSize = [[234, 396]]
+    m.tasksToComplete--
     people = m.LoadPeopleTask.content
     m.loadPeopleTask.unobserveField("content")
     if people <> invalid and people.count() > 0
-        row = m.top.content.createChild("ContentNode")
+        row = m.unsortedContent.createChild("ContentNode")
         row.Title = tr("Cast & Crew")
         for each person in people
             if person.json.type = "Actor" and person.json.Role <> invalid
@@ -93,13 +101,15 @@ sub onPeopleLoaded()
             row.appendChild(person)
         end for
     end if
+    sortCompletedTasks()
 end sub
 
 sub onLikeThisLoaded()
+    m.tasksToComplete--
     data = m.LikeThisTask.content
     m.LikeThisTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = m.top.content.createChild("ContentNode")
+        row = m.unsortedContent.createChild("ContentNode")
         row.Title = tr("More Like This")
         for each item in data
             item.Id = item.json.Id
@@ -114,15 +124,16 @@ sub onLikeThisLoaded()
             item.Type = item.json.Type
             row.appendChild(item)
         end for
-        addRowSize([234, 396])
     end if
+    sortCompletedTasks()
 end sub
 
-function onSpecialFeaturesLoaded()
+sub onSpecialFeaturesLoaded()
+    m.tasksToComplete--
     data = m.SpecialFeaturesTask.content
     m.SpecialFeaturesTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = m.top.content.createChild("ContentNode")
+        row = m.unsortedContent.createChild("ContentNode")
         row.Title = tr("Special Features")
         for each item in data
             m.top.visible = true
@@ -133,50 +144,41 @@ function onSpecialFeaturesLoaded()
             item.imageWidth = 450
             row.appendChild(item)
         end for
-        addRowSize([462, 372])
     end if
-
-    return m.top.content
-end function
+    sortCompletedTasks()
+end sub
 
 sub onMoviesLoaded()
+    m.tasksToComplete--
     data = m.LoadMoviesTask.content
     m.LoadMoviesTask.unobserveField("content")
-    rlContent = CreateObject("roSGNode", "ContentNode")
     if data <> invalid and data.count() > 0
-        row = rlContent.createChild("ContentNode")
-        row.title = tr("Movies")
-        for each mov in data
-            mov.Id = mov.json.Id
-            mov.labelText = mov.json.Name
-            mov.subTitle = mov.json.ProductionYear
-            mov.Type = mov.json.Type
-            row.appendChild(mov)
-        end for
-        m.top.rowItemSize = [[234, 396]]
+        row = buildRow(tr("Movies"), data)
+        m.unsortedContent.insertChild(row, 3)
     end if
-    m.top.content = rlContent
+    sortCompletedTasks()
 end sub
 
 sub onShowsLoaded()
+    m.tasksToComplete--
     data = m.LoadShowsTask.content
     m.LoadShowsTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = buildRow("TV Shows", data, 502)
-        addRowSize([502, 396])
-        m.top.content.appendChild(row)
+        row = buildRow(tr("TV Shows"), data, 502)
+        m.unsortedContent.insertChild(row, 2)
     end if
+    sortCompletedTasks()
 end sub
 
 sub onSeriesLoaded()
+    m.tasksToComplete--
     data = m.LoadSeriesTask.content
     m.LoadSeriesTask.unobserveField("content")
     if data <> invalid and data.count() > 0
-        row = buildRow("Series", data)
-        addRowSize([234, 396])
-        m.top.content.appendChild(row)
+        row = buildRow(tr("Series"), data)
+        m.unsortedContent.insertChild(row, 1)
     end if
-    m.top.visible = true
+    sortCompletedTasks()
 end sub
 
 function buildRow(rowTitle as string, items, imgWdth = 0)
@@ -207,4 +209,43 @@ end sub
 
 sub onRowItemSelected()
     m.top.selectedItem = m.top.content.getChild(m.top.rowItemSelected[0]).getChild(m.top.rowItemSelected[1])
+end sub
+
+function getIndex(rowTitle, arr)
+    rowIndex = invalid
+    for i = 0 to arr.getChildCount() - 1
+        tmpRow = m.unsortedContent.getChild(i)
+        if tmpRow.title = rowTitle
+            rowIndex = i
+            return rowIndex
+        end if
+    end for
+    return rowIndex
+end function
+
+sub sortCompletedTasks()
+    ' if the next item we are waiting for has been loaded,
+    ' process it and remove it from the items we are waiting for
+    rowIndex = getIndex(m.rowTitlesInOrder[0], m.unsortedContent) ' the index of the next item we want, invalid if item has not been completed
+    while m.unsortedContent.getChildCount() > 0 and rowIndex <> invalid
+        child = m.unsortedContent.getChild(rowIndex)
+        m.top.content.appendChild(child)
+        m.unsortedContent.removeChild(child)
+        addRowSize(m.rowSizes[0])
+        m.rowSizes.shift()
+        m.rowTitlesInOrder.shift()
+        rowIndex = getIndex(m.rowTitlesInOrder[0], m.unsortedContent)
+    end while
+    if m.tasksToComplete = 0 and not m.loadingComplete
+        'everything loaded, but the next item we waited for was invalid, so load what we have
+        'this happens, for example, when there are no 'Additional Parts'
+        for i = 0 to m.rowTitlesInOrder.count() - 1
+            rowIndex = getIndex(m.rowTitlesInOrder[i], m.unsortedContent)
+            if rowIndex <> invalid
+                m.top.content.appendChild(m.unsortedContent.getChild(rowIndex))
+                addRowSize(m.rowSizes[i])
+            end if
+        end for
+        m.loadingComplete = true
+    end if
 end sub
