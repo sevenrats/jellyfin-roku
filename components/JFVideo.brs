@@ -288,7 +288,7 @@ sub setinfo()
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
     else
-        m.info = m.top.content.description
+        m.info = m.top.content.description 'Live TV Description
     end if
 end sub
 
@@ -297,7 +297,7 @@ sub info()
     ' If buffering has stopped Display dialog
     m.buttonGrp.visible = false
     dialog = createObject("roSGNode", "PlaybackInfoDialog")
-    if Len(m.info) > 0
+    if Len(m?.info) > 0
         dialog.message = m.info
     else
         dialog.message = "A description for this stream is not available."
@@ -321,11 +321,9 @@ sub dialogClosed(msg)
 end sub
 
 sub Subtitles()
-    if m.top.Subtitles.count()
-        m.top.selectSubtitlePressed = true
-        m.buttonGrp.visible = false
-        m.top.setFocus(true)
-    end if
+    m.top.selectSubtitlePressed = true
+    m.buttonGrp.visible = false
+    m.top.setFocus(true)
 end sub
 
 sub PlaybackInfo()
@@ -432,9 +430,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 toggleButtonGrpVisible()
                 return true
             else
-                print key
-                print m.top.hasFocus()
-                print m.top.state
+                ' print key
+                ' print m.top.hasFocus()
+                ' print m.top.state
             end if
         end if
     end if
@@ -472,7 +470,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
                     return true
                 end if
                 if selectedButton.id = "cc"
-                    Subtitles()
+                    m.top.selectSubtitlePressed = true
+                    m.buttonGrp.visible = false
+                    m.top.setFocus(true)
                 end if
                 if selectedButton.id = "playbackInfo"
                     PlaybackInfo()
@@ -526,12 +526,23 @@ sub closeExtrasSlider()
 end sub
 
 sub toggleButtonGrpVisible()
+    setinfo()
+    if not m.top.content.live = true
+        if m.content.People.count() < 1
+            m.buttonGrp.removeChild(m.top.findNode("cast"))
+        end if
+    end if
+    if not m.top.content.live = true
+        if m.content.HasSubtitles = invalid
+            m.buttonGrp.removeChild(m.top.findNode("cc"))
+        end if
+    end if
     if m.buttonGrp.visible
         m.buttonGrp.setFocus(false)
         m.buttonGrp.visible = false
         m.top.setFocus(true)
     else
-        setinfo()
+        'setinfo()
         selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
         selectedButton.focus = true
         m.buttonGrp.setFocus(true)
