@@ -534,6 +534,7 @@ function CreateVideoPlayerGroup(video_id, mediaSourceId = invalid, audio_stream_
     video.observeField("selectSubtitlePressed", m.port)
     video.observeField("selectPlaybackInfoPressed", m.port)
     video.observeField("state", m.port)
+    video.playBackInfo = GetPlaybackInfo()
 
     extras = video.findNode("extrasGrid")
     extras.observeField("selectedItem", m.port)

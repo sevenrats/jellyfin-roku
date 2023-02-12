@@ -1,6 +1,7 @@
 sub init()
     m.playbackTimer = m.top.findNode("playbackTimer")
     m.bufferCheckTimer = m.top.findNode("bufferCheckTimer")
+    m.suppressKey = false
     m.top.observeField("state", "onState")
     m.top.observeField("content", "onContentChange")
 
@@ -294,10 +295,13 @@ end sub
 sub info()
 
     ' If buffering has stopped Display dialog
-    dialog = createObject("roSGNode", "Dialog")
-    dialog.buttons = [tr("OK")]
-    dialog.message = m.info
-    dialog.observeField("buttonSelected", "dialogClosed")
+    m.buttonGrp.visible = false
+    dialog = createObject("roSGNode", "PlaybackInfoDialog")
+    if Len(m.info) > 0
+        dialog.message = m.info
+    else
+        dialog.message = "A description for this stream is not available."
+    end if
     m.top.getScene().dialog = dialog
     m.top.control = "pause"
 end sub
@@ -325,9 +329,14 @@ sub Subtitles()
 end sub
 
 sub PlaybackInfo()
-    m.top.selectPlaybackInfoPressed = true
     m.buttonGrp.visible = false
-    m.top.setFocus(true)
+    m.top.control = "pause"
+    dialog = createObject("rosgnode", "PlaybackInfoDialog")
+    for i = 0 to m.top.playbackInfo.count() - 1
+        dialog.message = dialog.message + m.top.playbackInfo[i] + chr(10)
+    end for
+    m.top.getScene().dialog = dialog
+
 end sub
 
 sub onButtonGroupEscaped()
@@ -389,20 +398,11 @@ end sub
 
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    if key = "back"
-        if m.top.control = "pause" and not m.extras.isinfocuschain()
-            m.top.control = "resume"
-            return true
-        end if
-        if m.tvGuide?.visible = true
-            m.tvGuide.setFocus(false)
-            m.tvGuide.lastFocus = "videoPlayer"
-            m.tvGuide.visible = false
-            m.buttonGrp.setFocus(false)
-            m.buttonGrp.visible = false
-            m.top.setFocus(true)
-            return true
-        end if
+    if m.suppressKey
+        ' we need to listen to the down lift in order to hide the buttons bc the press is in ButtonGrp
+        ' but we have to ignore the down lift so we dont show buttons when we close the slider with down
+        m.suppressKey = false
+        return true
     end if
 
     if key = "OK" and m.nextEpisodeButton.isinfocuschain() and m.top.trickPlayMode = "play"
@@ -414,28 +414,55 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m.nextEpisodeButton.setFocus(false)
         m.top.setFocus(true)
     end if
-    if key = "down" and m.top.hasFocus() and m.top.state = "playing"
-        setinfo()
-        m.buttonGrp.setFocus(true)
-        m.buttonGrp.visible = true
-        return true
+
+    if key = "down"
+        if press
+            if m.buttonGrp.isinFocusChain()
+                m.buttonGrp.setFocus(false)
+                m.buttonGrp.visible = false
+                m.top.setFocus(true)
+                return true
+            else if m.extras.hasFocus()
+                m.suppressKey = true
+                closeExtrasSlider()
+                return true
+            end if
+        else
+            if m.top.state = "playing"
+                toggleButtonGrpVisible()
+                return true
+            else
+                print key
+                print m.top.hasFocus()
+                print m.top.state
+            end if
+        end if
     end if
 
-    if press and (key = "down" or key = "back") and m.extras.hasFocus()
-        m.extras.setFocus(false)
-        m.top.findNode("VertSlider").reverse = true
-        m.top.findNode("extrasFader").reverse = true
-        m.top.findNode("pplAnime").control = "start"
-        m.top.setFocus(true)
-        m.top.control = "resume"
-        m.extrasGrp.opacity = 0
-        return true
+    if key = "back"
+        if press
+            if m.extras.hasFocus()
+                closeExtrasSlider()
+                return true
+            else if isValid(m.tvGuide) and m.tvGuide.isInFocusChain()
+                m.tvGuide.setFocus(false)
+                m.tvGuide.lastFocus = "videoPlayer"
+                m.tvGuide.visible = false
+                m.buttonGrp.setFocus(false)
+                m.buttonGrp.visible = false
+                m.top.setFocus(true)
+                return true
+            end if
+        else
+            'm.top.setFocus(true) ' if JFVideo hears a back release, it should have focus
+            if not m.buttonGrp.visible
+                m.top.control = "resume"
+            end if
+        end if
     end if
+
 
     if m.buttonGrp.visible = true
-        'make first button highlighted
-        selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
-        selectedButton.focus = true
         if key = "OK"
             if press
                 selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
@@ -463,6 +490,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
                     m.top.findNode("VertSlider").reverse = false
                     m.top.findNode("extrasFader").reverse = false
                     m.top.findNode("pplAnime").control = "start"
+                    m.buttonGrp.visible = false
                     return true
                 end if
             end if
@@ -486,3 +514,27 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
     return false
 end function
+
+sub closeExtrasSlider()
+    m.extras.setFocus(false)
+    m.top.findNode("VertSlider").reverse = true
+    m.top.findNode("extrasFader").reverse = true
+    m.top.findNode("pplAnime").control = "start"
+    m.top.setFocus(true)
+    m.top.control = "resume"
+    m.extrasGrp.opacity = 0
+end sub
+
+sub toggleButtonGrpVisible()
+    if m.buttonGrp.visible
+        m.buttonGrp.setFocus(false)
+        m.buttonGrp.visible = false
+        m.top.setFocus(true)
+    else
+        setinfo()
+        selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
+        selectedButton.focus = true
+        m.buttonGrp.setFocus(true)
+        m.buttonGrp.visible = true
+    end if
+end sub

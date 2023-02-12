@@ -496,12 +496,6 @@ sub Main (args as dynamic) as void
                     changeSubtitleDuringPlayback(trackSelected)
                 end if
             end if
-        else if isNodeEvent(msg, "selectPlaybackInfoPressed")
-            node = m.scene.focusedChild
-            if node.focusedChild <> invalid and node.focusedChild.isSubType("JFVideo")
-                info = GetPlaybackInfo()
-                show_dialog(tr("Playback Information"), info)
-            end if
         else if isNodeEvent(msg, "state")
             node = msg.getRoSGNode()
 
