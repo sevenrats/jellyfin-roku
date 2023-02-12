@@ -3,6 +3,7 @@
 <component name="GetItemQueryTask" extends="Task">
     <interface>
         <field id="videoID" type="string" />
+        <field id="live" type="string" />
         <field id="getItemQueryData" type="assocarray" />
     </interface>
     <script type="text/brightscript" uri="GetItemQueryTask.brs" />

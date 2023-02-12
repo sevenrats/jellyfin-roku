@@ -199,6 +199,9 @@ sub onState(msg)
         if m.top.content.live = true
             m.buttonGrp.removeChild(m.top.findNode("cast"))
             m.buttonGrp.removeChild(m.top.findNode("cc"))
+            m.getItemQueryTask.live = "true"
+            m.getItemQueryTask.videoID = m.top.id
+            m.getItemQueryTask.control = "RUN"
             setupButtons()
         end if
 
@@ -281,15 +284,21 @@ end sub
 
 sub setinfo()
     'episode info
-    if m.getNextEpisodeTask.nextEpisodeData <> invalid
+    if not m.getNextEpisodeTask.nextEpisodeData = invalid
         m.info = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
         m.content = m.getNextEpisodeTask.nextEpisodeData.Items[0]
-    else if m.getItemQueryTask.getItemQueryData <> invalid 'movie info
+    else if not m.getItemQueryTask.getItemQueryData = invalid and not m.top.content.live = true 'movie info
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
-    else
-        m.info = m.top.content.description 'Live TV Description
+    else if not m.getItemQueryTask.getItemQueryData = invalid 'Live TV Content
+        m.info = m.getItemQueryTask.getItemQueryData.Items.[0].CurrentProgram.Overview
+        m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
     end if
+
+    if m.info = invalid
+        m.buttonGrp.removeChild(m.top.findNode("info"))
+    end if
+
 end sub
 
 sub info()
@@ -297,7 +306,7 @@ sub info()
     ' If buffering has stopped Display dialog
     m.buttonGrp.visible = false
     dialog = createObject("roSGNode", "PlaybackInfoDialog")
-    if Len(m?.info) > 0
+    if not m.info = invalid
         dialog.message = m.info
     else
         dialog.message = "A description for this stream is not available."
@@ -429,10 +438,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
             if m.top.state = "playing"
                 toggleButtonGrpVisible()
                 return true
-            else
-                ' print key
-                ' print m.top.hasFocus()
-                ' print m.top.state
             end if
         end if
     end if
