@@ -189,6 +189,11 @@ sub onState(msg)
                 m.getNextEpisodeTask.showID = m.top.showID
                 m.getNextEpisodeTask.videoID = m.top.id
                 m.getNextEpisodeTask.control = "RUN"
+                ' if nextepisode data is invalid then get item data instead
+                if m.getNextEpisodeTask.nextEpisodeData = invalid
+                    m.getItemQueryTask.videoID = m.top.id
+                    m.getItemQueryTask.control = "RUN"
+                end if
                 'remove Guide option
                 m.buttonGrp.removeChild(m.top.findNode("guide"))
                 setupButtons()
@@ -296,10 +301,10 @@ sub setinfo()
     if not m.getNextEpisodeTask.nextEpisodeData = invalid
         m.info = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
         m.content = m.getNextEpisodeTask.nextEpisodeData.Items[0]
-    else if not m.getItemQueryTask.getItemQueryData = invalid and not m.top.content.live = true 'movie info
+    else if not m.getItemQueryTask.getItemQueryData = invalid and not m.top.content.live = true 'Live TV Content'movie info
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
-    else if not m.getItemQueryTask.getItemQueryData = invalid 'Live TV Content
+    else if not m.getItemQueryTask.getItemQueryData = invalid 'movie info
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].CurrentProgram.Overview
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
     end if
@@ -474,7 +479,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
     end if
 
 
-    if m.buttonGrp.visible = true
+    if m.buttonGrp.visible
         if key = "OK"
             if press
                 selectedButton = m.buttonGrp.getChild(m.top.selectedButtonIndex)
