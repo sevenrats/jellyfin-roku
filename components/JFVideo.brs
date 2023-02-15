@@ -215,6 +215,7 @@ sub onState(msg)
             m.buttonGrp.removeChild(m.top.findNode("cast"))
             m.buttonGrp.removeChild(m.top.findNode("cc"))
             m.getItemQueryTask.live = "true"
+            print "m.top.id" m.top.id
             m.getItemQueryTask.videoID = m.top.id
             m.getItemQueryTask.control = "RUN"
             setupButtons()
@@ -301,11 +302,15 @@ sub setinfo()
     if not m.getNextEpisodeTask.nextEpisodeData = invalid
         m.info = m.getNextEpisodeTask.nextEpisodeData.Items[0].Overview
         m.content = m.getNextEpisodeTask.nextEpisodeData.Items[0]
-    else if not m.getItemQueryTask.getItemQueryData = invalid and not m.top.content.live = true 'Live TV Content'movie info
+    else if not m.getItemQueryTask.getItemQueryData = invalid and not m.top.content.live = true 'movie info
         m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
-    else if not m.getItemQueryTask.getItemQueryData = invalid 'movie info
-        m.info = m.getItemQueryTask.getItemQueryData.Items.[0].CurrentProgram.Overview
+    else if not m.getItemQueryTask.getItemQueryData = invalid 'Live TV Content
+        if not m.getItemQueryTask.getItemQueryData.Items.[0].Overview = invalid
+            m.info = m.getItemQueryTask.getItemQueryData.Items.[0].Overview
+        else
+            m.info = invalid
+        end if
         m.content = m.getItemQueryTask.getItemQueryData.Items.[0]
     end if
 
@@ -546,15 +551,19 @@ end sub
 
 sub toggleButtonGrpVisible()
     setinfo()
-    if not m.top.content.live = true
+    if not m.top?.content.live = true
         if m.content.People.count() < 1
             m.buttonGrp.removeChild(m.top.findNode("cast"))
         end if
+    else
+        m.buttonGrp.removeChild(m.top.findNode("cast"))
     end if
-    if not m.top.content.live = true
+    if not m.top?.content.live = true
         if m.content.HasSubtitles = invalid
             m.buttonGrp.removeChild(m.top.findNode("cc"))
         end if
+    else
+        m.buttonGrp.removeChild(m.top.findNode("cc"))
     end if
     if m.buttonGrp.visible
         m.buttonGrp.setFocus(false)

@@ -3,15 +3,16 @@ sub init()
 end sub
 
 sub getItemQueryTask()
-    if m.top.live = "true"
+    if not m.top.live = "true"
         m.getItemQueryTask = api_API().users.getitemsbyquery(get_setting("active_user"), {
             ids: m.top.videoID,
             fields: "Overview,People"
         })
     else
-        m.getItemQueryTask = api_API().users.getprogramsbyquery({
+        m.getItemQueryTask = api_API().livetv.getprograms({
             channelIds: m.top.videoID,
-            isAiring: "true"
+            isAiring: "true",
+            fields: "People,Overview"
         })
     end if
     m.top.getItemQueryData = m.getItemQueryTask
