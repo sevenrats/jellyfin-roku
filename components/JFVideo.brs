@@ -24,6 +24,7 @@ sub init()
     m.nextEpisodeButton = m.top.findNode("nextEpisode")
     m.nextEpisodeButton.text = tr("Next Episode")
     m.nextEpisodeButton.setFocus(false)
+    m.nextupbuttonseconds = get_user_setting("playback.nextupbuttonseconds", "30")
 
     m.showNextEpisodeButtonAnimation = m.top.findNode("showNextEpisodeButton")
     m.hideNextEpisodeButtonAnimation = m.top.findNode("hideNextEpisodeButton")
@@ -111,7 +112,11 @@ end sub
 '
 'Update count down text
 sub updateCount()
-    m.nextEpisodeButton.text = tr("Next Episode") + " " + Int(m.top.runTime - m.top.position).toStr()
+    nextEpisodeCountdown = Int(m.top.runTime - m.top.position)
+    if nextEpisodeCountdown < 0
+        nextEpisodeCountdown = 0
+    end if
+    m.nextEpisodeButton.text = tr("Next Episode") + " " + nextEpisodeCountdown.toStr()
 end sub
 
 '
@@ -124,7 +129,13 @@ end sub
 
 ' Checks if we need to display the Next Episode button
 sub checkTimeToDisplayNextEpisode()
-    if int(m.top.position) >= (m.top.runTime - 30)
+    nextEpisodeCountdown = Int(m.top.runTime - m.top.position)
+    if nextEpisodeCountdown < 0
+        hideNextEpisodeButton()
+        return
+    end if
+
+    if int(m.top.position) >= (m.top.runTime - Val(m.nextupbuttonseconds))
         showNextEpisodeButton()
         updateCount()
         return
@@ -161,11 +172,10 @@ sub onState(msg)
             m.top.retryWithTranscoding = true ' If playback was not reported, retry with transcoding
         else
             ' If an error was encountered, Display dialog
-            dialog = createObject("roSGNode", "Dialog")
+            dialog = createObject("roSGNode", "PlaybackDialog")
             dialog.title = tr("Error During Playback")
             dialog.buttons = [tr("OK")]
             dialog.message = tr("An error was encountered while playing this item.")
-            dialog.observeField("buttonSelected", "dialogClosed")
             m.top.getScene().dialog = dialog
         end if
         ' Stop playback and exit player
@@ -267,11 +277,10 @@ sub bufferCheck(msg)
             m.top.callFunc("refresh")
         else
             ' If buffering has stopped Display dialog
-            dialog = createObject("roSGNode", "Dialog")
+            dialog = createObject("roSGNode", "PlaybackDialog")
             dialog.title = tr("Error Retrieving Content")
             dialog.buttons = [tr("OK")]
             dialog.message = tr("There was an error retrieving the data for this item from the server.")
-            dialog.observeField("buttonSelected", "dialogClosed")
             m.top.getScene().dialog = dialog
 
             ' Stop playback and exit player
