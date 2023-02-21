@@ -75,9 +75,7 @@ end sub
 sub onButtonGroupEscaped()
     key = m.btnGrp.escape
     if key = "down"
-        m.dscr.setFocus(true)
-        m.dscr.opacity = 1.0
-        m.top.findNode("dscrBorder").color = "#d0d0d0ff"
+        dscrShowFocus()
     end if
 end sub
 
