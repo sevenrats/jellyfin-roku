@@ -167,8 +167,8 @@ Your new functionality may need a setting to configure its behavior, or, sometim
 
 ### The order of any particular menu is as follows:
 
-First comes any menu titled "General"
-Second, any settings that have children, in alphabetical order
+First, any menu titled "General."
+Second, any settings that have children, in alphabetical order.
 Third, any settings that do not have children, in alphabetical order.
 
 ### When giving your setting a name
