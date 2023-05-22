@@ -63,7 +63,7 @@ function APIRequest(url as string, params = {} as object) as dynamic
     ' SSL cert
     serverURL = get_setting("server")
     if serverURL <> invalid and serverURL.left(8) = "https://"
-        req.setCertificatesFile("common:/certs/ca-bundle.crt")
+        setCertificateAuthority(req)
     end if
 
     return req
@@ -186,6 +186,10 @@ function postString(req, data = "" as string)
 
     return resp.getString()
 end function
+
+sub setCertificateAuthority(request as object) as void
+    request.setCertificatesFile("common:/certs/ca-bundle.crt")
+end sub
 
 function authorize_request(request)
     user = get_setting("active_user")
