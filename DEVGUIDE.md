@@ -18,7 +18,6 @@ Follow the steps below to install the app on your personal Roku device. This wil
   - [Upgrade](#upgrade)
   - [Command Line Workflow](#command-line-workflow)
   - [Committing](#committing)
-  - [(Optional) Update Images](#optional-update-images)
   - [Adding a User Setting](#adding-a-user-setting)
     - [The order of any particular menu is as follows](#the-order-of-any-particular-menu-is-as-follows)
     - [When giving your setting a name](#when-giving-your-setting-a-name)
