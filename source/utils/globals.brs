@@ -20,7 +20,9 @@ sub setConstants()
                 descending_white: "pkg:/images/icons/down_white.png",
                 check_black: "pkg:/images/icons/check_black.png",
                 check_white: "pkg:/images/icons/check_white.png"
-            }
+            },
+
+            capath: "common:/certs/ca-bundle.crt"
         }
     })
 end sub

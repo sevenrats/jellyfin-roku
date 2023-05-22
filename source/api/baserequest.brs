@@ -188,7 +188,7 @@ function postString(req, data = "" as string)
 end function
 
 sub setCertificateAuthority(request as object) as void
-    request.setCertificatesFile("common:/certs/ca-bundle.crt")
+    request.setCertificatesFile(m.global.constants.capath)
 end sub
 
 function authorize_request(request)
