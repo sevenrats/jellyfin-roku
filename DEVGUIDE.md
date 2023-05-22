@@ -172,22 +172,6 @@ make prep_commit
 
 This will format your code and run the CI checks locally to ensure you will pass the CI tests.
 
-## (Optional) Update Images
-
-This repo already contains all necessary images for the app. This script only needs to be run when the [official Jellyfin images](https://github.com/jellyfin/jellyfin-ux) are changed to allow us to update the repo images.
-
-Install necessary packages:
-
-```bash
-sudo apt-get install imagemagick
-```
-
-Download and convert images:
-
-```bash
-make get_images
-```
-
 ## Adding a User Setting
 
 Your new functionality may need a setting to configure its behavior, or, sometimes, we may ask you to add a setting for your new functionality, so that users may enable or disable it.  If you find yourself in this position, please observe the following considerations when adding your new user setting.
