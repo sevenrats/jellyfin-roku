@@ -188,7 +188,6 @@ function postString(req, data = "" as string)
 end function
 
 ' sets the certificate authority by file path on the passed node
-' your custom CA file goes here
 sub setCertificateAuthority(request as object) as void
     request.setCertificatesFile("common:/certs/ca-bundle.crt")
 end sub
