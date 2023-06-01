@@ -64,7 +64,7 @@ function APIRequest(url as string, params = {} as object) as dynamic
     req.setUrl(full_url)
     req = authorize_request(req)
     ' SSL cert
-    if serverURL <> invalid and serverURL.left(8) = "https://"
+    if serverURL.left(8) = "https://"
         setCertificateAuthority(req)
     end if
 
