@@ -797,6 +797,25 @@ function getDeviceProfile() as object
         deviceProfile.CodecProfiles.push(codecProfileArray)
     end if
 
+    ' some audio codecs do not support multichannel
+    for each audioCodec in ["opus"]
+        for each codecType in ["VideoAudio", "Audio"]
+            codecProfileArray = {
+                "Type": codecType,
+                "Codec": audioCodec,
+                "Conditions": [
+                    {
+                        "Condition": "LessThanEqual",
+                        "Property": "AudioChannels",
+                        "Value": "2",
+                        "IsRequired": true
+                    }
+                ]
+            }
+            deviceProfile.CodecProfiles.push(codecProfileArray)
+        end for
+    end for
+
     return deviceProfile
 end function
 
