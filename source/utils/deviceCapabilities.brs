@@ -484,8 +484,10 @@ function getDeviceProfile() as object
 
     ' AUDIO
     ' test each codec to see how many channels are supported
-
-    audioCodecs = ["mp3", "mp2", "pcm", "lpcm", "wav", "aac", "ac3", "ac4", "aiff", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
+    ' for some codecs the api wrongly reports channel support,
+    ' these are handled in the next loop.
+    ' no codec should appear in both loops
+    audioCodecs = ["mp3", "mp2", "pcm", "lpcm", "wav", "flac", "alac", "aac", "ac3", "ac4", "aiff", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
     audioChannels = [8, 6, 2] ' highest first
     for each audioCodec in audioCodecs
         for each audioChannel in audioChannels
@@ -509,11 +511,9 @@ function getDeviceProfile() as object
         end for
     end for
 
-    ' some audio codecs have wrongly reported
-    ' multichannel support. no codec should
-    ' be handled by both loops
+    ' some audio codecs have wrongly reported multichannel support
 
-    for each audioCodec in ["opus", "wma", "flac", "alac"]
+    for each audioCodec in ["opus", "wma"]
         for each codecType in ["VideoAudio", "Audio"]
             codecProfileArray = {
                 "Type": codecType,
