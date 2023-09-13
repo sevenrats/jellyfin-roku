@@ -500,7 +500,7 @@ function getDeviceProfile() as object
                             "Condition": "LessThanEqual",
                             "Property": "AudioChannels",
                             "Value": audioChannel,
-                            "IsRequired": false
+                            "IsRequired": true
                         }
                     ]
                 })
