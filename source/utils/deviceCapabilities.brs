@@ -306,19 +306,7 @@ function getDeviceProfile() as object
         "DirectPlayProfiles": DirectPlayProfile,
         "TranscodingProfiles": [],
         "ContainerProfiles": [],
-        "CodecProfiles": [
-            {
-                "Type": "VideoAudio",
-                "Conditions": [
-                    {
-                        "Condition": "LessThanEqual",
-                        "Property": "AudioChannels",
-                        "Value": maxAudioChannels,
-                        "IsRequired": false
-                    }
-                ]
-            }
-        ],
+        "CodecProfiles": [],
         "SubtitleProfiles": [
             {
                 "Format": "vtt",
@@ -512,9 +500,16 @@ function getDeviceProfile() as object
     if maxAudioChannels = "2"
         ' use whatever value is reported by the device
         ' this will allow the device to downmix multichannel audio to stereo
+        channelSupportFound = false
         for each audioChannel in audioChannels
+            if channelSupportFound
+                ' if 8 channels are supported we don't need to test for 6 or 2
+                ' if 6 channels are supported we don't need to test 2
+                exit for
+            end if
             for each codecType in ["VideoAudio", "Audio"]
                 if di.CanDecodeAudio({ Codec: "aac", ChCnt: audioChannel }).Result
+                    channelSupportFound = true
                     deviceProfile.CodecProfiles.push({
                         "Type": codecType,
                         "Codec": "aac",
@@ -527,15 +522,13 @@ function getDeviceProfile() as object
                             }
                         ]
                     })
-                    ' if 8 channels are supported we don't need to test for 6 or 2
-                    ' if 6 channels are supported we don't need to test 2
-                    exit for
                 end if
             end for
         end for
     else
         ' set aac to 2 channels max if surround sound is supported
-        ' this should prevent aac from downmixing to stereo
+        ' this should prevent aac from downmixing to stereo and force
+        ' a transcode to preserve multichannel audio
         for each codecType in ["VideoAudio", "Audio"]
             deviceProfile.CodecProfiles.push({
                 "Type": codecType,
