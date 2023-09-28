@@ -513,63 +513,43 @@ function getDeviceProfile() as object
         ' use whatever value is reported by the device
         ' this will allow the device to downmix multichannel audio to stereo
         for each audioChannel in audioChannels
-            if di.CanDecodeAudio({ Codec: "aac", ChCnt: audioChannel }).Result
-                deviceProfile.CodecProfiles.push({
-                    "Type": "VideoAudio",
-                    "Codec": "aac",
-                    "Conditions": [
-                        {
-                            "Condition": "LessThanEqual",
-                            "Property": "AudioChannels",
-                            "Value": audioChannel,
-                            "IsRequired": true
-                        }
-                    ]
-                })
-                deviceProfile.CodecProfiles.push({
-                    "Type": "Audio",
-                    "Codec": "aac",
-                    "Conditions": [
-                        {
-                            "Condition": "LessThanEqual",
-                            "Property": "AudioChannels",
-                            "Value": audioChannel,
-                            "IsRequired": true
-                        }
-                    ]
-                })
-                ' if 8 channels are supported we don't need to test for 6 or 2
-                ' if 6 channels are supported we don't need to test 2
-                exit for
-            end if
+            for each codecType in ["VideoAudio", "Audio"]
+                if di.CanDecodeAudio({ Codec: "aac", ChCnt: audioChannel }).Result
+                    deviceProfile.CodecProfiles.push({
+                        "Type": codecType,
+                        "Codec": "aac",
+                        "Conditions": [
+                            {
+                                "Condition": "LessThanEqual",
+                                "Property": "AudioChannels",
+                                "Value": audioChannel,
+                                "IsRequired": true
+                            }
+                        ]
+                    })
+                    ' if 8 channels are supported we don't need to test for 6 or 2
+                    ' if 6 channels are supported we don't need to test 2
+                    exit for
+                end if
+            end for
         end for
     else
         ' set aac to 2 channels max if surround sound is supported
         ' this should prevent aac from downmixing to stereo
-        deviceProfile.CodecProfiles.push({
-            "Type": "VideoAudio",
-            "Codec": "aac",
-            "Conditions": [
-                {
-                    "Condition": "LessThanEqual",
-                    "Property": "AudioChannels",
-                    "Value": "2",
-                    "IsRequired": true
-                }
-            ]
-        })
-        deviceProfile.CodecProfiles.push({
-            "Type": "Audio",
-            "Codec": "aac",
-            "Conditions": [
-                {
-                    "Condition": "LessThanEqual",
-                    "Property": "AudioChannels",
-                    "Value": "2",
-                    "IsRequired": true
-                }
-            ]
-        })
+        for each codecType in ["VideoAudio", "Audio"]
+            deviceProfile.CodecProfiles.push({
+                "Type": codecType,
+                "Codec": "aac",
+                "Conditions": [
+                    {
+                        "Condition": "LessThanEqual",
+                        "Property": "AudioChannels",
+                        "Value": "2",
+                        "IsRequired": true
+                    }
+                ]
+            })
+        end for
     end if
 
     ' OPUS, WMA
