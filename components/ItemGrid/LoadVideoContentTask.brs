@@ -62,6 +62,8 @@ function LoadItems_VideoPlayer(id as string, mediaSourceId = invalid as dynamic,
         return invalid
     end if
 
+    print "video=", video
+    print "video.content=", video.content
     return video
 end function
 
@@ -141,7 +143,13 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
 
 
     ' 'TODO: allow user selection of subtitle track before playback initiated, for now set to no subtitles
-
+    print "m.playbackInfo.MediaSources[0]", m.playbackInfo.MediaSources[0]
+    print "m.playbackInfo.MediaSources[0].Formats", m.playbackInfo.MediaSources[0].Formats
+    print "m.playbackInfo.MediaSources[0].MediaStreams", m.playbackInfo.MediaSources[0].MediaStreams
+    for each stream in m.playbackInfo.MediaSources[0].MediaStreams
+        print "stream=", stream
+    end for
+    print "video.audioIndex=", video.audioIndex
     video.directPlaySupported = m.playbackInfo.MediaSources[0].SupportsDirectPlay
     fully_external = false
 
@@ -203,15 +211,31 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
             fully_external = true
             video.content.url = m.playbackInfo.MediaSources[0].Path
         end if
-    else:
-        params = {}
-
-        params.append({
+    else
+        params = {
             "Static": "true",
             "Container": video.container,
             "PlaySessionId": video.PlaySessionId,
             "AudioStreamIndex": audio_stream_idx
-        })
+        }
+
+        selectedAudioStream = m.playbackInfo.MediaSources[0].MediaStreams[audio_stream_idx]
+        if selectedAudioStream.Channels > 2 and Lcase(selectedAudioStream.Codec) = "aac" or Lcase(selectedAudioStream.Codec) = "opus"
+            ' does the user have a receiver that can decode this multichannel audio stream?
+            di = CreateObject("roDeviceInfo")
+            if di.CanDecodeAudio({ Codec: selectedAudioStream.Codec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
+                print "User has a receiver that can decode the selected multichannel audio stream"
+                ' transcode the audio to keep multichannel support
+                ' otherwise the roku device will downmix to stereo
+                if m.global.session.user.settings["playback.forceDTS"]
+                    params.audioCodec = "dts"
+                else
+                    params.audioCodec = "eac3"
+                end if
+                video.transcodeReasons = "Transcoding to preserve multichannel audio"
+                video.isTranscoded = true
+            end if
+        end if
 
         if mediaSourceId <> ""
             params.MediaSourceId = mediaSourceId
