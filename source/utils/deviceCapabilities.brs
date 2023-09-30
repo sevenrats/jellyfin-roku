@@ -678,6 +678,12 @@ function getCodecProfiles() as object
                 "IsRequired": false
             },
             {
+                "Condition": "LessThanEqual",
+                "Property": "VideoBitDepth",
+                "Value": "8",
+                "IsRequired": false
+            },
+            {
                 "Condition": "EqualsAny",
                 "Property": "VideoProfile",
                 "Value": h264AssProfiles.Keys().join("|"),
