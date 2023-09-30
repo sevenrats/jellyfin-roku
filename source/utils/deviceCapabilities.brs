@@ -472,7 +472,7 @@ function getDeviceProfile() as object
 
     ' AUDIO
     ' test each codec to see how many channels are supported
-    audioCodecs = ["mp3", "mp2", "pcm", "lpcm", "wav", "flac", "alac", "ac3", "ac4", "aiff", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
+    audioCodecs = ["mp3", "mp2", "opus", "pcm", "lpcm", "wav", "flac", "alac", "ac3", "ac4", "aiff", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
     audioChannels = [8, 6, 2] ' highest first
     for each audioCodec in audioCodecs
         for each audioChannel in audioChannels
@@ -544,26 +544,6 @@ function getDeviceProfile() as object
             })
         end for
     end if
-
-    ' OPUS, WMA
-    ' CanDecodeVideo() wrongly reports these codecs as having multichannel support
-    ' hardcode them at 2 channels max
-    for each audioCodec in ["opus", "wma"]
-        for each codecType in ["VideoAudio", "Audio"]
-            deviceProfile.CodecProfiles.push({
-                "Type": codecType,
-                "Codec": audioCodec,
-                "Conditions": [
-                    {
-                        "Condition": "LessThanEqual",
-                        "Property": "AudioChannels",
-                        "Value": "2",
-                        "IsRequired": true
-                    }
-                ]
-            })
-        end for
-    end for
 
     ' H264
     h264Mp4LevelSupported = 0.0
