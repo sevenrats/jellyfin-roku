@@ -490,47 +490,17 @@ function getCodecProfiles() as object
 
     ' AUDIO
     ' test each codec to see how many channels are supported
-    audioCodecs = ["mp3", "mp2", "opus", "pcm", "lpcm", "wav", "flac", "alac", "ac3", "ac4", "aiff", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
+    audioCodecs = ["aac", "mp3", "mp2", "opus", "pcm", "lpcm", "wav", "flac", "alac", "ac3", "ac4", "aiff", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
     audioChannels = [8, 6, 2] ' highest first
     for each audioCodec in audioCodecs
         for each audioChannel in audioChannels
+            channelSupportFound = false
             if di.CanDecodeAudio({ Codec: audioCodec, ChCnt: audioChannel }).Result
-                codecProfiles.push({
-                    "Type": "Audio",
-                    "Codec": audioCodec,
-                    "Conditions": [
-                        {
-                            "Condition": "LessThanEqual",
-                            "Property": "AudioChannels",
-                            "Value": audioChannel,
-                            "IsRequired": true
-                        }
-                    ]
-                })
-                ' if 8 channels are supported we don't need to test for 6 or 2
-                ' if 6 channels are supported we don't need to test 2
-                exit for
-            end if
-        end for
-    end for
-
-    ' AAC
-    if di.GetAudioOutputChannel() = "Stereo"
-        ' use whatever value is reported by the device
-        ' this will allow the device to downmix multichannel audio to stereo
-        channelSupportFound = false
-        for each audioChannel in audioChannels
-            if channelSupportFound
-                ' if 8 channels are supported we don't need to test for 6 or 2
-                ' if 6 channels are supported we don't need to test 2
-                exit for
-            end if
-            for each codecType in ["VideoAudio", "Audio"]
-                if di.CanDecodeAudio({ Codec: "aac", ChCnt: audioChannel }).Result
-                    channelSupportFound = true
+                channelSupportFound = true
+                for each codecType in ["VideoAudio", "Audio"]
                     codecProfiles.push({
                         "Type": codecType,
-                        "Codec": "aac",
+                        "Codec": audioCodec,
                         "Conditions": [
                             {
                                 "Condition": "LessThanEqual",
@@ -540,28 +510,16 @@ function getCodecProfiles() as object
                             }
                         ]
                     })
-                end if
-            end for
+
+                end for
+            end if
+            if channelSupportFound
+                ' if 8 channels are supported we don't need to test for 6 or 2
+                ' if 6 channels are supported we don't need to test 2
+                exit for
+            end if
         end for
-    else
-        ' set aac to 2 channels max if surround sound is supported
-        ' this should prevent aac from downmixing to stereo and force
-        ' a transcode to preserve multichannel audio
-        for each codecType in ["VideoAudio", "Audio"]
-            codecProfiles.push({
-                "Type": codecType,
-                "Codec": "aac",
-                "Conditions": [
-                    {
-                        "Condition": "LessThanEqual",
-                        "Property": "AudioChannels",
-                        "Value": "2",
-                        "IsRequired": true
-                    }
-                ]
-            })
-        end for
-    end if
+    end for
 
     ' check device for codec profile and level support
     ' AVC / h264 / MPEG4 AVC
