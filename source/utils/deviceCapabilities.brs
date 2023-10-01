@@ -685,12 +685,10 @@ function getCodecProfiles() as object
     ' NOTE: the mpeg2 levels are being saved in the profileSupport array as if they were profiles
     if m.global.session.user.settings["playback.mpeg2"]
         mpeg2Levels = []
-        for each container in profileSupport
-            for each level in profileSupport[container]["mpeg2"]
-                if not arrayHasValue(mpeg2Levels, level)
-                    mpeg2Levels.push(level)
-                end if
-            end for
+        for each level in profileSupport["mpeg2"]
+            if not arrayHasValue(mpeg2Levels, level)
+                mpeg2Levels.push(level)
+            end if
         end for
 
         mpeg2ProfileArray = {
