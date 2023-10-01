@@ -172,8 +172,8 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
     end if
 
     if video.directPlaySupported
-        addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
         video.isTranscoded = false
+        addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
     else
         if m.playbackInfo.MediaSources[0].TranscodingUrl = invalid
             ' If server does not provide a transcode URL, display a message to the user
@@ -219,6 +219,8 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
             "AudioStreamIndex": audio_stream_idx
         }
 
+        print "attempting to make the file transcode"
+
         selectedAudioStream = m.playbackInfo.MediaSources[0].MediaStreams[audio_stream_idx]
         if selectedAudioStream.Channels > 2 and Lcase(selectedAudioStream.Codec) = "aac" or Lcase(selectedAudioStream.Codec) = "opus"
             ' does the user have a receiver that can decode this multichannel audio stream?
@@ -234,9 +236,12 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
                     print "Attempting to transcode audio to our preferred multichannel codec"
                     ' transcode the audio to keep multichannel support
                     ' otherwise the roku device will downmix aac/opus to stereo
+                    params.Delete("Static")
                     params.audioCodec = preferredCodec
-                    video.transcodeReasons = "Transcoding to preserve multichannel audio"
                     video.isTranscoded = true
+                    video.directplaysupported = false
+                    params.transcodeReasons = "Switching audio codecs to preserve multichannel audio support"
+                    video.transcodeReasons = params.transcodeReasons
                 end if
             end if
         end if
