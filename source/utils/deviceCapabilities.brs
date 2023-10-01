@@ -775,7 +775,7 @@ function getCodecProfiles() as object
     if not m.global.session.user.settings["playback.compatibility.disablehevc"] and di.CanDecodeVideo({ Codec: "hevc" }).Result
         hevcLevelSupported = 0.0
         hevcAssProfiles = {}
-        print "profileSupport[hevc]", profileSupport["hevc"]
+
         for each profile in profileSupport["hevc"]
             hevcAssProfiles.AddReplace(profile, true)
             for each level in profileSupport["hevc"][profile]

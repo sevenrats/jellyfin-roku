@@ -223,17 +223,21 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
         if selectedAudioStream.Channels > 2 and Lcase(selectedAudioStream.Codec) = "aac" or Lcase(selectedAudioStream.Codec) = "opus"
             ' does the user have a receiver that can decode this multichannel audio stream?
             di = CreateObject("roDeviceInfo")
-            if di.CanDecodeAudio({ Codec: selectedAudioStream.Codec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
-                print "User has a receiver that can decode the selected multichannel audio stream"
-                ' transcode the audio to keep multichannel support
-                ' otherwise the roku device will downmix to stereo
+            if not di.CanDecodeAudio({ Codec: selectedAudioStream.Codec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
+                print "Users receiver can not decode the selected multichannel audio stream"
+                ' check to see if the receiver can decode our preferred audio codec
+                preferredCodec = "eac3"
                 if m.global.session.user.settings["playback.forceDTS"]
-                    params.audioCodec = "dts"
-                else
-                    params.audioCodec = "eac3"
+                    preferredCodec = "dts"
                 end if
-                video.transcodeReasons = "Transcoding to preserve multichannel audio"
-                video.isTranscoded = true
+                if di.CanDecodeAudio({ Codec: preferredCodec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
+                    print "Attempting to transcode audio to our preferred multichannel codec"
+                    ' transcode the audio to keep multichannel support
+                    ' otherwise the roku device will downmix aac/opus to stereo
+                    params.audioCodec = preferredCodec
+                    video.transcodeReasons = "Transcoding to preserve multichannel audio"
+                    video.isTranscoded = true
+                end if
             end if
         end if
 
