@@ -230,19 +230,14 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
                 ' check to see if the receiver can decode our preferred audio codec
                 preferredCodec = "eac3"
                 if m.global.session.user.settings["playback.forceDTS"]
-                    if selectedAudioStream.Container = "webm" or selectedAudioStream = "mkv"
-                        preferredCodec = "dts"
-                    end if
+                    preferredCodec = "dts"
                 end if
                 if di.CanDecodeAudio({ Codec: preferredCodec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
                     print "Attempting to transcode audio to our preferred multichannel codec"
                     ' transcode the audio to keep multichannel support
                     ' otherwise the roku device will downmix aac/opus to stereo
-                    params.Static = "false"
+                    params.Delete("Static")
                     params.audioCodec = preferredCodec
-                    params.maxAudioChannels = selectedAudioStream.Channels
-                    params.container = video.container
-                    params.audioSampleRate = selectedAudioStream.SampleRate
                     video.isTranscoded = true
                     video.directplaysupported = false
                     params.transcodeReasons = "Switching audio codecs to preserve multichannel audio support"
