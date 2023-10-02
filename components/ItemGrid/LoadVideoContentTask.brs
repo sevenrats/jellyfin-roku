@@ -230,7 +230,7 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
                 ' check to see if the receiver can decode our preferred audio codec
                 preferredCodec = "ac3"
                 forceMKV = false
-                if selectedAudioStream.Container = "webm" or selectedAudioStream = "mkv"
+                if selectedAudioStream.Container = "webm" or selectedAudioStream.Container = "mkv"
                     if m.global.session.user.settings["playback.forceDTS"]
                         preferredCodec = "dts"
                     end if
