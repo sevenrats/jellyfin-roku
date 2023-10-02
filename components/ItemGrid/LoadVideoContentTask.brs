@@ -219,8 +219,6 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
             "AudioStreamIndex": audio_stream_idx
         }
 
-        print "attempting to make the file transcode"
-
         selectedAudioStream = m.playbackInfo.MediaSources[0].MediaStreams[audio_stream_idx]
         if selectedAudioStream.Channels > 2 and Lcase(selectedAudioStream.Codec) = "aac" or Lcase(selectedAudioStream.Codec) = "opus"
             ' does the user have a receiver that can decode this multichannel audio stream?
@@ -238,8 +236,6 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
                     print "Attempting to transcode audio to our preferred multichannel codec"
                     ' transcode the audio to keep multichannel support
                     ' otherwise the roku device will downmix aac/opus to stereo
-                    params.Static = false
-                    params.context = "Streaming"
                     params.audioCodec = preferredCodec
                     ' force all
                     if selectedAudioStream.Codec = "aac"
