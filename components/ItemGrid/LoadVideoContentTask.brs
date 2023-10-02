@@ -228,9 +228,11 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
             if not di.CanDecodeAudio({ Codec: selectedAudioStream.Codec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
                 print "Users receiver can not decode the selected multichannel audio stream"
                 ' check to see if the receiver can decode our preferred audio codec
-                preferredCodec = "eac3"
+                preferredCodec = "ac3"
                 if m.global.session.user.settings["playback.forceDTS"]
-                    preferredCodec = "dts"
+                    if selectedAudioStream.Container = "webm" or selectedAudioStream = "mkv"
+                        preferredCodec = "dts"
+                    end if
                 end if
                 if di.CanDecodeAudio({ Codec: preferredCodec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
                     print "Attempting to transcode audio to our preferred multichannel codec"
