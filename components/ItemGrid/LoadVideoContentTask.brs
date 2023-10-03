@@ -224,7 +224,7 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
             ' does the user have a receiver that can decode this multichannel audio stream?
             di = CreateObject("roDeviceInfo")
             if not di.CanDecodeAudio({ Codec: selectedAudioStream.Codec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
-                print "Users receiver can not decode the selected multichannel audio stream"
+                print "Attached HDMI device can not decode the selected multichannel audio codec"
                 ' check to see if the receiver can decode our preferred audio codec
                 preferredCodec = "ac3"
                 if selectedAudioStream.Container = "webm" or selectedAudioStream.Container = "mkv"
@@ -233,9 +233,12 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
                     end if
                 end if
                 if di.CanDecodeAudio({ Codec: preferredCodec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
-                    print "Attempting to transcode audio to our preferred multichannel codec"
+                    print "Attached HDMI device can decode our preferred multichannel audio codec"
+                    print "Attempting to transcode audio to the users preferred multichannel audio codec"
                     ' transcode the audio to keep multichannel support
                     ' otherwise the roku device will downmix aac/opus to stereo
+                    params.Static = false
+                    params.context = "Streaming"
                     params.audioCodec = preferredCodec
                     ' force all
                     if selectedAudioStream.Codec = "aac"
