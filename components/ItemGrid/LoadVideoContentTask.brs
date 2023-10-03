@@ -221,26 +221,22 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx, fully_external)
 
         selectedAudioStream = m.playbackInfo.MediaSources[0].MediaStreams[audio_stream_idx]
         if selectedAudioStream.Channels > 2 and Lcase(selectedAudioStream.Codec) = "aac" or Lcase(selectedAudioStream.Codec) = "opus"
-            ' does the user have a receiver that can decode this multichannel audio stream?
+            ' does the user have an HDMI device attached that can decode this multichannel audio stream?
             di = CreateObject("roDeviceInfo")
             if not di.CanDecodeAudio({ Codec: selectedAudioStream.Codec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
                 print "Attached HDMI device can not decode the selected multichannel audio codec"
-                ' check to see if the receiver can decode our preferred audio codec
-                preferredCodec = "ac3"
-                if selectedAudioStream.Container = "webm" or selectedAudioStream.Container = "mkv"
-                    if m.global.session.user.settings["playback.forceDTS"]
-                        preferredCodec = "dts"
-                    end if
-                end if
-                if di.CanDecodeAudio({ Codec: preferredCodec, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
+                ' check to see if the attached HDMI device can decode our preferred audio codec
+                preferredAudioCodec = m.global.session.user.playback.preferredAudioCodec
+
+                if di.CanDecodeAudio({ Codec: preferredAudioCodec, Container: selectedAudioStream.Container, ChCnt: selectedAudioStream.Channels, PassThru: 1 }).Result
                     print "Attached HDMI device can decode our preferred multichannel audio codec"
                     print "Attempting to transcode audio to the users preferred multichannel audio codec"
                     ' transcode the audio to keep multichannel support
                     ' otherwise the roku device will downmix aac/opus to stereo
                     params.Static = false
                     params.context = "Streaming"
-                    params.audioCodec = preferredCodec
-                    ' force all
+                    params.audioCodec = preferredAudioCodec
+                    ' force all multichannel aac files to use mkv container
                     if selectedAudioStream.Codec = "aac"
                         params.container = "mkv"
                     end if
