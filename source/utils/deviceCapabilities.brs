@@ -121,11 +121,6 @@ function GetDirectPlayProfiles() as object
     videoCodecs = ["h264", "mpeg4 avc", "vp8", "vp9", "h263", "mpeg1"]
     audioCodecs = ["mp3", "mp2", "pcm", "lpcm", "wav", "ac3", "ac4", "aiff", "wma", "flac", "alac", "aac", "opus", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
 
-    ' only try to direct play av1 if asked
-    if m.global.session.user.settings["playback.av1"]
-        videoCodecs.push("av1")
-    end if
-
     ' check if hevc is disabled
     if m.global.session.user.settings["playback.compatibility.disablehevc"] = false
         videoCodecs.push("hevc")
@@ -155,6 +150,15 @@ function GetDirectPlayProfiles() as object
     if m.global.session.user.settings["playback.mpeg2"]
         for each container in supportedCodecs
             supportedCodecs[container]["video"].push("mpeg2video")
+        end for
+    end if
+
+    ' video codec overrides
+    ' these codecs play fine but are not correctly detected using CanDecodeVideo()
+    if di.CanDecodeVideo({ Codec: "av1" }).Result
+        ' codec must be checked by itself or the result will always be false
+        for each container in supportedCodecs
+            supportedCodecs[container]["video"].push("av1")
         end for
     end if
 
@@ -1056,4 +1060,34 @@ function removeDecimals(value as string) as string
     r = CreateObject("roRegex", "\.", "")
     value = r.ReplaceAll(value, "")
     return value
+end function
+
+' Takes and returns a comma delimited string of codecs.
+' Moves the preferred codec to the front of the string
+function setPreferredCodec(codecString as string, preferredCodec as string) as string
+    if preferredCodec = "" then return ""
+    if codecString = "" then return preferredCodec
+
+    preferredCodecSize = Len(preferredCodec)
+
+    ' is the codec already in front?
+    if Left(codecString, preferredCodecSize) = preferredCodec
+        return codecString
+    else
+        ' convert string to array
+        codecArray = codecString.Split(",")
+        ' remove preferred codec from array
+        newArray = []
+        for each codec in codecArray
+            if codec <> preferredCodec
+                newArray.push(codec)
+            end if
+        end for
+        ' convert newArray to string
+        newCodecString = newArray.Join(",")
+        ' add preferred codec to front of newCodecString
+        newCodecString = preferredCodec + "," + newCodecString
+
+        return newCodecString
+    end if
 end function
