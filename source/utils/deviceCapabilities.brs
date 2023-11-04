@@ -59,23 +59,24 @@ sub PostDeviceProfile()
 end sub
 
 function getDeviceProfile() as object
+    globalDevice = m.global.device
     return {
         "Name": "Official Roku Client",
-        "Id": m.global.device.id,
+        "Id": globalDevice.id,
         "Identification": {
-            "FriendlyName": m.global.device.friendlyName,
-            "ModelNumber": m.global.device.model,
+            "FriendlyName": globalDevice.friendlyName,
+            "ModelNumber": globalDevice.model,
             "SerialNumber": "string",
-            "ModelName": m.global.device.name,
-            "ModelDescription": "Type: " + m.global.device.modelType,
-            "Manufacturer": m.global.device.modelDetails.VendorName
+            "ModelName": globalDevice.name,
+            "ModelDescription": "Type: " + globalDevice.modelType,
+            "Manufacturer": globalDevice.modelDetails.VendorName
         },
-        "FriendlyName": m.global.device.friendlyName,
-        "Manufacturer": m.global.device.modelDetails.VendorName,
-        "ModelName": m.global.device.name,
-        "ModelDescription": "Type: " + m.global.device.modelType,
-        "ModelNumber": m.global.device.model,
-        "SerialNumber": m.global.device.serial,
+        "FriendlyName": globalDevice.friendlyName,
+        "Manufacturer": globalDevice.modelDetails.VendorName,
+        "ModelName": globalDevice.name,
+        "ModelDescription": "Type: " + globalDevice.modelType,
+        "ModelNumber": globalDevice.model,
+        "SerialNumber": globalDevice.serial,
         "MaxStreamingBitrate": 120000000,
         "MaxStaticBitrate": 100000000,
         "MusicStreamingTranscodingBitrate": 192000,
@@ -88,6 +89,7 @@ function getDeviceProfile() as object
 end function
 
 function GetDirectPlayProfiles() as object
+    globalUserSettings = m.global.session.user.settings
     directPlayProfiles = []
     di = CreateObject("roDeviceInfo")
     ' all possible containers
@@ -122,7 +124,7 @@ function GetDirectPlayProfiles() as object
     audioCodecs = ["mp3", "mp2", "pcm", "lpcm", "wav", "ac3", "ac4", "aiff", "wma", "flac", "alac", "aac", "opus", "dts", "wmapro", "vorbis", "eac3", "mpg123"]
 
     ' check if hevc is disabled
-    if m.global.session.user.settings["playback.compatibility.disablehevc"] = false
+    if globalUserSettings["playback.compatibility.disablehevc"] = false
         videoCodecs.push("hevc")
     end if
 
@@ -142,12 +144,12 @@ function GetDirectPlayProfiles() as object
     end for
 
     ' user setting overrides
-    if m.global.session.user.settings["playback.mpeg4"]
+    if globalUserSettings["playback.mpeg4"]
         for each container in supportedCodecs
             supportedCodecs[container]["video"].push("mpeg4")
         end for
     end if
-    if m.global.session.user.settings["playback.mpeg2"]
+    if globalUserSettings["playback.mpeg2"]
         for each container in supportedCodecs
             supportedCodecs[container]["video"].push("mpeg2video")
         end for
@@ -208,6 +210,7 @@ function GetDirectPlayProfiles() as object
 end function
 
 function getTranscodingProfiles() as object
+    globalUserSettings = m.global.session.user.settings
     transcodingProfiles = []
 
     di = CreateObject("roDeviceInfo")
@@ -224,7 +227,7 @@ function getTranscodingProfiles() as object
     ' in order of preference from left to right
     audioCodecs = ["mp3", "vorbis", "opus", "flac", "alac", "ac4", "pcm", "wma", "wmapro"]
     surroundSoundCodecs = ["eac3", "ac3", "dts"]
-    if m.global.session.user.settings["playback.forceDTS"] = true
+    if globalUserSettings["playback.forceDTS"] = true
         surroundSoundCodecs = ["dts", "eac3", "ac3"]
     end if
 
@@ -275,7 +278,7 @@ function getTranscodingProfiles() as object
     end for
 
     ' HEVC / h265
-    if m.global.session.user.settings["playback.compatibility.disablehevc"] = false
+    if globalUserSettings["playback.compatibility.disablehevc"] = false
         for each container in transcodingContainers
             if di.CanDecodeVideo({ Codec: "hevc", Container: container }).Result
                 if container = "mp4"
@@ -317,7 +320,7 @@ function getTranscodingProfiles() as object
     end for
 
     ' MPEG2
-    if m.global.session.user.settings["playback.mpeg2"]
+    if globalUserSettings["playback.mpeg2"]
         for each container in transcodingContainers
             if di.CanDecodeVideo({ Codec: "mpeg2", Container: container }).Result
                 if container = "mp4"
@@ -425,7 +428,7 @@ function getTranscodingProfiles() as object
     }
 
     ' apply max res to transcoding profile
-    if m.global.session.user.settings["playback.resolution.max"] <> "off"
+    if globalUserSettings["playback.resolution.max"] <> "off"
         tsArray.Conditions = [getMaxHeightArray(), getMaxWidthArray()]
         mp4Array.Conditions = [getMaxHeightArray(), getMaxWidthArray()]
     end if
@@ -477,6 +480,7 @@ function getContainerProfiles() as object
 end function
 
 function getCodecProfiles() as object
+    globalUserSettings = m.global.session.user.settings
     codecProfiles = []
     profileSupport = {
         "h264": {},
@@ -487,7 +491,7 @@ function getCodecProfiles() as object
         "mpeg2": {},
         "av1": {}
     }
-    maxResSetting = m.global.session.user.settings["playback.resolution.max"]
+    maxResSetting = globalUserSettings["playback.resolution.max"]
     di = CreateObject("roDeviceInfo")
     maxHeightArray = getMaxHeightArray()
     maxWidthArray = getMaxWidthArray()
@@ -662,7 +666,7 @@ function getCodecProfiles() as object
     }
 
     ' check user setting before adding video level restrictions
-    if not m.global.session.user.settings["playback.tryDirect.h264ProfileLevel"]
+    if not globalUserSettings["playback.tryDirect.h264ProfileLevel"]
         h264ProfileArray.Conditions.push({
             "Condition": "LessThanEqual",
             "Property": "VideoLevel",
@@ -672,7 +676,7 @@ function getCodecProfiles() as object
     end if
 
     ' set max resolution
-    if m.global.session.user.settings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
+    if globalUserSettings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
         h264ProfileArray.Conditions.push(maxHeightArray)
         h264ProfileArray.Conditions.push(maxWidthArray)
     end if
@@ -687,7 +691,7 @@ function getCodecProfiles() as object
 
     ' MPEG2
     ' NOTE: the mpeg2 levels are being saved in the profileSupport array as if they were profiles
-    if m.global.session.user.settings["playback.mpeg2"]
+    if globalUserSettings["playback.mpeg2"]
         mpeg2Levels = []
         for each level in profileSupport["mpeg2"]
             if not arrayHasValue(mpeg2Levels, level)
@@ -709,7 +713,7 @@ function getCodecProfiles() as object
         }
 
         ' set max resolution
-        if m.global.session.user.settings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
+        if globalUserSettings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
             mpeg2ProfileArray.Conditions.push(maxHeightArray)
             mpeg2ProfileArray.Conditions.push(maxWidthArray)
         end if
@@ -762,7 +766,7 @@ function getCodecProfiles() as object
         }
 
         ' set max resolution
-        if m.global.session.user.settings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
+        if globalUserSettings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
             av1ProfileArray.Conditions.push(maxHeightArray)
             av1ProfileArray.Conditions.push(maxWidthArray)
         end if
@@ -776,7 +780,7 @@ function getCodecProfiles() as object
         codecProfiles.push(av1ProfileArray)
     end if
 
-    if not m.global.session.user.settings["playback.compatibility.disablehevc"] and di.CanDecodeVideo({ Codec: "hevc" }).Result
+    if not globalUserSettings["playback.compatibility.disablehevc"] and di.CanDecodeVideo({ Codec: "hevc" }).Result
         hevcLevelSupported = 0.0
         hevcAssProfiles = {}
 
@@ -821,7 +825,7 @@ function getCodecProfiles() as object
         }
 
         ' check user setting before adding VideoLevel restrictions
-        if not m.global.session.user.settings["playback.tryDirect.hevcProfileLevel"]
+        if not globalUserSettings["playback.tryDirect.hevcProfileLevel"]
             hevcProfileArray.Conditions.push({
                 "Condition": "LessThanEqual",
                 "Property": "VideoLevel",
@@ -831,7 +835,7 @@ function getCodecProfiles() as object
         end if
 
         ' set max resolution
-        if m.global.session.user.settings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
+        if globalUserSettings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
             hevcProfileArray.Conditions.push(maxHeightArray)
             hevcProfileArray.Conditions.push(maxWidthArray)
         end if
@@ -890,7 +894,7 @@ function getCodecProfiles() as object
         }
 
         ' set max resolution
-        if m.global.session.user.settings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
+        if globalUserSettings["playback.resolution.mode"] = "everything" and maxResSetting <> "off"
             vp9ProfileArray.Conditions.push(maxHeightArray)
             vp9ProfileArray.Conditions.push(maxWidthArray)
         end if
@@ -931,8 +935,9 @@ function getSubtitleProfiles() as object
 end function
 
 function GetBitRateLimit(codec as string) as object
-    if m.global.session.user.settings["playback.bitrate.maxlimited"] = true
-        userSetLimit = m.global.session.user.settings["playback.bitrate.limit"].ToInt()
+    globalUserSettings = m.global.session.user.settings
+    if globalUserSettings["playback.bitrate.maxlimited"]
+        userSetLimit = globalUserSettings["playback.bitrate.limit"].ToInt()
         if isValid(userSetLimit) and type(userSetLimit) = "Integer" and userSetLimit > 0
             userSetLimit *= 1000000
             return {
@@ -984,13 +989,15 @@ function GetBitRateLimit(codec as string) as object
 end function
 
 function getMaxHeightArray() as object
-    maxResSetting = m.global.session.user.settings["playback.resolution.max"]
+    myGlobal = m.global
+
+    maxResSetting = myGlobal.session.user.settings["playback.resolution.max"]
     if maxResSetting = "off" then return {}
 
     maxVideoHeight = maxResSetting
 
     if maxResSetting = "auto"
-        maxVideoHeight = m.global.device.videoHeight
+        maxVideoHeight = myGlobal.device.videoHeight
     end if
 
     return {
@@ -1002,13 +1009,15 @@ function getMaxHeightArray() as object
 end function
 
 function getMaxWidthArray() as object
-    maxResSetting = m.global.session.user.settings["playback.resolution.max"]
+    myGlobal = m.global
+
+    maxResSetting = myGlobal.session.user.settings["playback.resolution.max"]
     if maxResSetting = "off" then return {}
 
     maxVideoWidth = invalid
 
     if maxResSetting = "auto"
-        maxVideoWidth = m.global.device.videoWidth
+        maxVideoWidth = myGlobal.device.videoWidth
     else if maxResSetting = "360"
         maxVideoWidth = "480"
     else if maxResSetting = "480"
