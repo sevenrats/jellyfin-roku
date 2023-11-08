@@ -1,4 +1,5 @@
 import "pkg:/source/utils/config.brs"
+import "pkg:/source/utils/resolver/resolver.brs"
 
 function isNodeEvent(msg, field as string) as boolean
     return type(msg) = "roSGNodeEvent" and msg.getField() = field
@@ -233,6 +234,9 @@ function urlCandidates(input as string)
     host = url[2]
     port = url[3]
     path = url[4]
+
+    host = resolve(host) ' /source/utils/resolver/resolver.brs
+
     protoCandidates = []
     supportedProtos = ["http:", "https:"] ' appending colons because the regex does
     if proto = "none:" ' the user did not declare a protocol
