@@ -38,7 +38,6 @@ function decode83(str as string) as integer
 end function
 
 function isBlurhashValid(blurhash as string) as boolean
-
     if blurhash = invalid or len(blurhash) < 6
         print "The blurhash string must be at least 6 characters"
         return false
@@ -120,16 +119,19 @@ end function
 ' the images in the fs are named with a hash of the blurhash string
 ' so that items which already exist are not rendered twice
 function renderFakeBlurhash(blurhash as string, width as integer, height as integer, punch = 1 as float)
-    bhfn = CreateObject("roByteArray")
-    bhfn.FromAsciiString(blurhash)
+    ' determine the file name
+    ' create the hasher and the bytestring for the hasher
+    blurhashByteArray = CreateObject("roByteArray")
+    blurhashByteArray.FromAsciiString(blurhash)
     digest = CreateObject("roEVPDigest")
     digest.Setup("md5")
-    digest.Update(bhfn)
-    fn = digest.Final()
+    digest.Update(blurhashByteArray)
+    filename = digest.Final()
     localFileSystem = CreateObject("roFileSystem")
-    if localFileSystem.Exists("tmp://" + fn + ".bmp")
-        return "tmp://" + fn + ".bmp"
+    if localFileSystem.Exists("tmp://" + filename + ".bmp")
+        return "tmp://" + filename + ".bmp"
     end if
+    ' doesn't exist in fs. render it.
     if isBlurhashValid(blurhash) = false then return invalid
     sizeFlag = decode83(Mid(blurhash, 1, 1))
     numY = Fix(sizeFlag / 9) + 1
@@ -175,6 +177,6 @@ function renderFakeBlurhash(blurhash as string, width as integer, height as inte
         pixels.push(pixel)
     end for
     ba = bitmapImageByteArray(numX, numY, pixels)
-    ba.WriteFile("tmp://" + fn + ".bmp")
-    return "tmp://" + fn + ".bmp"
+    ba.WriteFile("tmp://" + filename + ".bmp")
+    return "tmp://" + filename + ".bmp"
 end function
