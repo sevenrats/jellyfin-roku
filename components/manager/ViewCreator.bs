@@ -7,6 +7,8 @@ end sub
 
 ' Play Video
 sub CreateVideoPlayerView()
+    m.scene = m.top.getScene()
+    startMediaLoadingSpinner()
     m.playbackData = {}
     m.selectedSubtitle = {}
 
@@ -149,6 +151,7 @@ end sub
 
 ' Playback state change event handlers
 sub onStateChange()
+    stopLoadingSpinner()
     if LCase(m.view.state) = "finished"
         ' Close any open dialogs
         if m.global.sceneManager.callFunc("isDialogOpen")
