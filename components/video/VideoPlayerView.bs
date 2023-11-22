@@ -580,6 +580,8 @@ end function
 
 function onKeyEvent(key as string, press as boolean) as boolean
 
+    if m.top.getScene().disableRemote then return false
+
     ' Keypress handler while user is inside the chapter menu
     if m.chapterMenu.hasFocus()
         if not press then return false

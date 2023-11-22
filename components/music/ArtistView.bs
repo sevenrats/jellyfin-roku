@@ -252,6 +252,8 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
 
+    if m.top.getScene().disableRemote then return false
+
     if m.buttonGrp.isInFocusChain()
         if key = "OK"
             if press

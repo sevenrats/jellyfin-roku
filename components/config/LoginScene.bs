@@ -5,6 +5,9 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     ' Returns true if user navigates to a new focusable element
+
+    if m.top.getScene().disableRemote then return false
+
     if not press then return false
 
     list = m.top.findNode("configOptions")

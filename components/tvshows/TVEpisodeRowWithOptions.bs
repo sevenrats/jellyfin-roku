@@ -81,6 +81,8 @@ sub videoOptionsClosed()
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
+
+    if m.top.getScene().disableRemote then return false
     if not press then return false
 
     if key = "options" and isValid(m.rows.focusedChild) and isValid(m.rows.focusedChild.rowItemFocused)

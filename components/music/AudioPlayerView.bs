@@ -543,6 +543,8 @@ end sub
 ' Process key press events
 function onKeyEvent(key as string, press as boolean) as boolean
 
+    if m.top.getScene().disableRemote then return false
+
     ' Key bindings for remote control buttons
     if press
         ' If user presses key to turn off screensaver, don't do anything else with it

@@ -557,6 +557,9 @@ sub itemSelected()
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
+
+    if m.top.getScene().disableRemote then return false
+
     if press
         if key = "play"
             print "play was pressed from homerow"

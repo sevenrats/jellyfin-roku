@@ -247,6 +247,9 @@ sub saveFavoriteItemSelected(msg)
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
+
+    if m.top.getScene().disableRemote then return false
+
     if key = "down" or (key = "OK" and m.buttons.hasFocus())
         m.buttons.setFocus(false)
         m.menus[m.selectedItem].setFocus(true)

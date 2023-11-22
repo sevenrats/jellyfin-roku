@@ -53,6 +53,8 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
 
+    if m.top.getScene().disableRemote then return false
+
     m.searchAlphabox = m.top.findNode("search_Key")
     if m.searchAlphabox.textEditBox.hasFocus()
         m.searchAlphabox.textEditBox.translation = "[0, -150]"
