@@ -68,6 +68,9 @@ end function
 
 ' Handle navigation input from the remote and act on it
 function onKeyEvent(key as string, press as boolean) as boolean
+
+    if m.top.getScene().disableRemote then return false
+
     if key = "left" and m.tvEpisodeRow.hasFocus()
         m.shuffle.setFocus(true)
         return true
