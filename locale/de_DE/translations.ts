@@ -13929,5 +13929,468 @@
         <translation>Maximale Tage bis zum Nächsten</translation>
         <extracomment>Option Title in user setting screen</extracomment>
     </message>
+    <message>
+        <source>Movie Library Default View</source>
+        <translation>Standardansicht für Filmbibliothek</translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Default view for Movie Libraries.</source>
+        <translation>Standardansicht für Filmbibliotheken</translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Item Titles</source>
+        <translation>Titel der Elemente</translation>
+        <extracomment>Title of a setting - when should we show the title text of a grid item</extracomment>
+    </message>
+    <message>
+        <source>Select when to show titles.</source>
+        <translation>Wählen Sie aus, wann die Titel angezeigt werden sollen.</translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Always Show</source>
+        <translation>Immer anzeigen</translation>
+    </message>
+    <message>
+        <source>Configure the maximum playback bitrate.</source>
+        <translation>Die maximale Wiedergabe-Bitrate konfigurieren.</translation>
+    </message>
+    <message>
+        <source>Resumable</source>
+        <translation>Fortsetzbar</translation>
+    </message>
+    <message>
+        <source>Show On Hover</source>
+        <translation>Bei Hover anzeigen</translation>
+    </message>
+    <message>
+        <source>Artists (Presentation)</source>
+        <translation>Künstler (Präsentation)</translation>
+    </message>
+    <message>
+        <source>Album Artists (Presentation)</source>
+        <translation>Album-Künstler (Präsentation)</translation>
+    </message>
+    <message>
+        <source>Artists (Grid)</source>
+        <translation>Künstler (Raster)</translation>
+    </message>
+    <message>
+        <source>Song</source>
+        <translation>Lied</translation>
+    </message>
+    <message>
+        <source>Always Hide</source>
+        <translation>Immer ausblenden</translation>
+    </message>
+    <message>
+        <source>Album</source>
+        <translation>Album</translation>
+    </message>
+    <message>
+        <source>Albums</source>
+        <translation>Alben</translation>
+    </message>
+    <message>
+        <source>Disable Community Rating for Episodes</source>
+        <translation>Gemeinschaftsbewertung für Episoden deaktivieren</translation>
+    </message>
+    <message>
+        <source>Songs</source>
+        <translation>Lieder</translation>
+    </message>
+    <message>
+        <source>Enable Limit</source>
+        <translation>Limits aktivieren</translation>
+    </message>
+    <message>
+        <source>Enable or disable the &apos;Maximum Bitrate&apos; setting.</source>
+        <translation>Maximale Bitrate&apos; Einstellung aktivieren oder deaktivieren.</translation>
+    </message>
+    <message>
+        <source>Biographical information for this person is not currently available.</source>
+        <translation>Biografische Informationen zu dieser Person stehen derzeit nicht zur Verfügung.</translation>
+    </message>
+    <message>
+        <source>Bitrate Limit</source>
+        <translation>Bitratenlimit</translation>
+    </message>
+    <message>
+        <source>Hide the star and community rating for episodes of a TV show. This is to prevent spoilers of an upcoming good/bad episode.</source>
+        <translation>Die Sterne- und Gemeinschaftsbewertung für Episoden einer TV-Serie ausblenden. Dies dient dazu, Spoiler für eine kommende gute/schlechte Episode zu vermeiden.</translation>
+    </message>
+    <message>
+        <source>Album Artists (Grid)</source>
+        <translation>Album-Künstler (Raster)</translation>
+    </message>
+    <message>
+        <source>View All</source>
+        <translation>Alle anzeigen</translation>
+    </message>
+    <message>
+        <source>Disable HEVC</source>
+        <translation>HEVC deaktivieren</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Default view for Movie Libraries.</source>
+        <translation>Standardansicht für Film-Bibliotheken.</translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of Library pages</source>
+        <translation>Einstellungen im Zusammenhang mit dem Erscheinungsbild der Bibliotheksseiten</translation>
+    </message>
+    <message>
+        <source>Presentation</source>
+        <translation>Präsentation</translation>
+        <extracomment>Title of an option - name of presentation view</extracomment>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation>Raster</translation>
+        <extracomment>Title of an option - name of grid view</extracomment>
+    </message>
+    <message>
+        <source>If enabled, the number of unwatched episodes in a series/season will be removed.</source>
+        <translation>Wenn aktiviert, wird die Anzahl der unangesehenen Episoden in einer Serie/Staffel entfernt.</translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Choose your preferred audio codec when transcoding multichannel audio.</source>
+        <translation>Wählen Sie Ihren bevorzugten Audiocodec, wenn Mehrkanal-Audio transcodiert wird.</translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Audio Codec Support</source>
+        <translation>Unterstützung für Audiocodecs</translation>
+        <extracomment>Settings Menu - Title of option</extracomment>
+    </message>
+    <message>
+        <source>Maximum Resolution</source>
+        <translation>Maximale Auflösung</translation>
+        <extracomment>User Setting - Title</extracomment>
+    </message>
+    <message>
+        <source>Only transcoded files</source>
+        <translation>Nur transkodierte Dateien</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Remember the currently logged in user and try to log them in again next time you start the Jellyfin app.</source>
+        <translation>Merke dir den aktuell angemeldeten Benutzer und versuche, ihn beim nächsten Start der Jellyfin-App erneut anzumelden.</translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Use generated splashscreen image as Jellyfin&apos;s home background. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation>Verwende das generierte Splashscreen-Bild als Hintergrund für Jellyfin&apos;s Startseite. Jellyfin muss geschlossen und erneut geöffnet werden, damit die Änderung wirksam wird.</translation>
+        <extracomment>Description for option in Setting Screen</extracomment>
+    </message>
+    <message>
+        <source>Unable to find any albums or songs belonging to this artist</source>
+        <translation>Es konnten keine Alben oder Lieder dieses Künstlers gefunden werden</translation>
+        <extracomment>Popup message when we find no audio data for an artist</extracomment>
+    </message>
+    <message>
+        <source>Options for TV Shows.</source>
+        <translation>Optionen für TV-Sendungen.</translation>
+        <extracomment>Description for TV Shows user settings.</extracomment>
+    </message>
+    <message>
+        <source>No Chapter Data Found</source>
+        <translation>Keine Kapiteldaten gefunden</translation>
+        <extracomment>Message shown in OSD when no chapter data is returned by the API</extracomment>
+    </message>
+    <message>
+        <source>Media Grid options.</source>
+        <translation type="unfinished">Media Grid options.</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>Allgemein</translation>
+    </message>
+    <message>
+        <source>Maximum Bitrate</source>
+        <translation>Maximale Bitrate</translation>
+    </message>
+    <message>
+        <source>Grid View Settings</source>
+        <translation>Einstellungen für Rasteransicht</translation>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of the Home screen and the program in general.</source>
+        <translation>Einstellungen, die sich auf das Erscheinungsbild des Startbildschirms und des Programms im Allgemeinen beziehen.</translation>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of pages in TV Libraries.</source>
+        <translation>Einstellungen im Zusammenhang mit dem Erscheinungsbild von Seiten in TV-Bibliotheken.</translation>
+    </message>
+    <message>
+        <source>Settings that apply when Grid views are enabled.</source>
+        <translation>Einstellungen, die gelten, wenn Rasteransichten aktiviert sind.</translation>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of pages in Movie Libraries.</source>
+        <translation>Einstellungen im Zusammenhang mit dem Erscheinungsbild von Seiten in Film-Bibliotheken.</translation>
+    </message>
+    <message>
+        <source>Disable Unwatched Episode Count</source>
+        <translation>Unangesehene Episodenanzahl deaktivieren</translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Next Episode Button Time</source>
+        <translation>Zeit für die Schaltfläche &apos;Nächste Episode</translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Force all transcodes to use DTS instead of the default EAC3. The device must support DTS for this setting to have an effect.</source>
+        <translation>Erzwingen Sie, dass alle Transcodierungen DTS anstelle von dem Standard EAC3 verwenden. Das Gerät muss DTS unterstützen, damit diese Einstellung wirksam wird.</translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Set the maximum resolution when playing video files on this device.</source>
+        <translation>Legen Sie die maximale Auflösung fest, wenn Videodateien auf diesem Gerät abgespielt werden.</translation>
+        <extracomment>User Setting - Description</extracomment>
+    </message>
+    <message>
+        <source>Auto - Use TV resolution</source>
+        <translation>Auto - Verwende TV-Auflösung</translation>
+        <extracomment>User Setting - Option title</extracomment>
+    </message>
+    <message>
+        <source>Off - Attempt to play all resolutions</source>
+        <translation>Aus - Versuche, alle Auflösungen abzuspielen</translation>
+        <extracomment>User Setting - Option title</extracomment>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Wert</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Mode</source>
+        <translation>Modus</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Configure the maximum resolution when playing video files on this device.</source>
+        <translation>Konfigurieren Sie die maximale Auflösung beim Abspielen von Videodateien auf diesem Gerät.</translation>
+        <extracomment>User Setting - Description</extracomment>
+    </message>
+    <message>
+        <source>Apply max resolution to all files or only transcoded files.</source>
+        <translation>Wenden Sie die maximale Auflösung auf alle Dateien oder nur auf transkodierte Dateien an.</translation>
+        <extracomment>User Setting - Description</extracomment>
+    </message>
+    <message>
+        <source>All files</source>
+        <translation>Alle Dateien</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Attempt to prevent playback failures.</source>
+        <translation>Versuch, Wiedergabeausfälle zu verhindern.</translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Compatibility</source>
+        <translation>Kompatibilität</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Global</source>
+        <translation>Global</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Disable the HEVC codec on this device. This may improve playback for some devices (ultra).</source>
+        <translation>Deaktivieren Sie den HEVC-Codec auf diesem Gerät. Dies kann die Wiedergabe für einige Geräte (ultra) verbessern.</translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Remember Me?</source>
+        <translation>Angemeldet bleiben?</translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Global settings that affect everyone that uses this Roku device.</source>
+        <translation>Globale Einstellungen, die jeden beeinflussen, der dieses Roku-Gerät verwendet.</translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>You can search for Titles, People, Live TV Channels and more</source>
+        <translation>Sie können nach Titeln, Personen, Live-TV-Sendern und mehr suchen</translation>
+        <extracomment>Help text in search results</extracomment>
+    </message>
+    <message>
+        <source>Libraries</source>
+        <translation>Bibliotheken</translation>
+    </message>
+    <message>
+        <source>Loading trailer</source>
+        <translation>Trailer wird geladen</translation>
+        <extracomment>Dialog title in Main.brs</extracomment>
+    </message>
+    <message>
+        <source>Set the maximum bitrate in Mbps. Set to 0 to use Roku&apos;s specifications. This setting must be enabled to take effect.</source>
+        <translation>Setzen Sie die maximale Bitrate in Mbps. Setzen Sie auf 0, um Rokus Spezifikationen zu verwenden. Diese Einstellung muss aktiviert sein, um wirksam zu werden.</translation>
+    </message>
+    <message>
+        <source>Direct playing</source>
+        <translation>Direkte Wiedergabe</translation>
+    </message>
+    <message>
+        <source>Set how many seconds before the end of an episode the Next Episode button should appear. Set to 0 to disable.</source>
+        <translation>Festlegen, wie viele Sekunden vor dem Ende einer Episode die Schaltfläche &apos;Nächste Episode&apos; erscheinen soll. Auf 0 setzen, um zu deaktivieren.</translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>The source file is entirely compatible with this client and the session is receiving the file without modifications.</source>
+        <translation>Die Quelldatei ist vollständig kompatibel mit diesem Client, und die Sitzung empfängt die Datei ohne Änderungen.</translation>
+        <extracomment>Direct play info box text in GetPlaybackInfoTask.brs</extracomment>
+    </message>
+    <message>
+        <source>On Now</source>
+        <translation>Läuft gerade</translation>
+    </message>
+    <message>
+        <source>RELEASE_DATE</source>
+        <translation>Veröffentlichungsdatum</translation>
+    </message>
+    <message>
+        <source>yesterday</source>
+        <translation>gestern</translation>
+        <extracomment>Previous day</extracomment>
+    </message>
+    <message>
+        <source>tomorrow</source>
+        <translation>morgen</translation>
+        <extracomment>Next day</extracomment>
+    </message>
+    <message>
+        <source>Wednesday</source>
+        <translation>Mittwoch</translation>
+        <extracomment>Day of Week</extracomment>
+    </message>
+    <message>
+        <source>Started at</source>
+        <translation>Gestartet bei</translation>
+        <extracomment>(Past Tense) For defining time when a program started today (e.g. Started at 08:00) </extracomment>
+    </message>
+    <message>
+        <source>Ended at</source>
+        <translation>Geendet bei</translation>
+        <extracomment>(Past Tense) For defining time when a program will ended (e.g. Ended at 08:00) </extracomment>
+    </message>
+    <message>
+        <source>Repeat</source>
+        <translation>Wiederholung</translation>
+        <extracomment>If TV Shows has previously been broadcasted</extracomment>
+    </message>
+    <message>
+        <source>Record</source>
+        <translation>Aufnehmen</translation>
+    </message>
+    <message>
+        <source>Cancel Recording</source>
+        <translation>Aufnahme abbrechen</translation>
+    </message>
+    <message>
+        <source>Connecting to Server</source>
+        <translation>Verbindung zum Server wird hergestellt</translation>
+        <extracomment>Message to display to user while client is attempting to connect to the server</extracomment>
+    </message>
+    <message>
+        <source>Pick a Jellyfin server from the local network</source>
+        <translation>Wähle einen verfügbaren Jellyfin Server aus deinem localen Netzwerk</translation>
+        <extracomment>Instructions on initial app launch when the user is asked to pick a server from a list</extracomment>
+    </message>
+    <message>
+        <source>Change Server</source>
+        <translation>Server wechseln</translation>
+    </message>
+    <message>
+        <source>Tuesday</source>
+        <translation>Dienstag</translation>
+        <extracomment>Day of Week</extracomment>
+    </message>
+    <message>
+        <source>Record Series</source>
+        <translation>Serie Aufnehmen</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Ausloggen</translation>
+    </message>
+    <message>
+        <source>Episodes</source>
+        <translation>Episoden</translation>
+    </message>
+    <message>
+        <source>Sunday</source>
+        <translation>Sonntag</translation>
+        <extracomment>Day of Week</extracomment>
+    </message>
+    <message>
+        <source>Monday</source>
+        <translation>Montag</translation>
+        <extracomment>Day of Week</extracomment>
+    </message>
+    <message>
+        <source>Thursday</source>
+        <translation>Donnerstag</translation>
+        <extracomment>Day of Week</extracomment>
+    </message>
+    <message>
+        <source>Started</source>
+        <translation>Gestartet</translation>
+        <extracomment>(Past Tense) For defining a day and time when a program started (e.g. Started Wednesday, 08:00) </extracomment>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation>Sender</translation>
+        <extracomment>Menu option for showing Live TV Channel List</extracomment>
+    </message>
+    <message>
+        <source>Friday</source>
+        <translation>Freitag</translation>
+        <extracomment>Day of Week</extracomment>
+    </message>
+    <message>
+        <source>...or enter server URL manually:</source>
+        <translation>Wenn oben kein Server angezeigt wird, kannst du auch eine Server URL manuell eingeben:</translation>
+        <extracomment>Instructions on initial app launch when the user is asked to manually enter a server URL</extracomment>
+    </message>
+    <message>
+        <source>An error was encountered while playing this item.</source>
+        <translation>Ein Fehler bei der Wiedergabe dieses Inhalts ist aufgetreten.</translation>
+        <extracomment>Dialog detail when error occurs during playback</extracomment>
+    </message>
+    <message>
+        <source>Saturday</source>
+        <translation>Samstag</translation>
+        <extracomment>Day of Week</extracomment>
+    </message>
+    <message>
+        <source>Not found</source>
+        <translation>Wurde nicht gefunden</translation>
+        <extracomment>Title of message box when the requested content is not found on the server</extracomment>
+    </message>
+    <message>
+        <source>IMDB_RATING</source>
+        <translation>IMDb Bewertung</translation>
+    </message>
+    <message>
+        <source>Error Retrieving Content</source>
+        <translation>Fehler biem laden des Inhalts</translation>
+        <extracomment>Dialog title when unable to load Content from Server</extracomment>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
 </context>
 </TS>
